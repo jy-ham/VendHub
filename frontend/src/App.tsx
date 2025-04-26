@@ -29,9 +29,9 @@ function App() {
       </div>
       <div>
         <Map
-          center={BCIT_DEFAULT_LOCATION}
+          center={center}
           zoom={16}
-          marker={BCIT_DEFAULT_LOCATION}
+          marker={center}
         />
       </div>
     </div>
