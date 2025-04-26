@@ -1,8 +1,8 @@
-import Map from './components/Map';
-import { useState } from 'react';
-import SearchBar from './components/SearchBar';
-import { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 
+import { useState } from 'react';
+import { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
+import Map from './components/Map';
+import SearchBar from './components/SearchBar';
 
 function App() {
   const BCIT_DEFAULT_LOCATION = {
@@ -21,18 +21,12 @@ function App() {
     }
   };
   return (
-    <div>
-      <div>
-        <div>
-          <SearchBar onSearch={handleSearch} />
-        </div>
+    <div className="app-container">
+      <div className="search-bar-wrapper">
+        <SearchBar onSearch={handleSearch} />
       </div>
-      <div>
-        <Map
-          center={center}
-          zoom={16}
-          marker={center}
-        />
+      <div className="map-container">
+        <Map center={center} zoom={18} />
       </div>
     </div>
   );
