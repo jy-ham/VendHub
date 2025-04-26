@@ -1,4 +1,26 @@
 {
-    "extends": "../tsconfig.json",
-    "include": ["api"]
-  }
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "Node16",
+    "moduleResolution": "node16",
+    "outDir": "../dist/backend",
+    "rootDir": ".",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+      "@api/*": [
+        "./api/*"
+      ]
+    }
+  },
+  "include": [
+    "**/*.ts",
+    "api/mapRoutes.js"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
