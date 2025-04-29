@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
-import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, OverlayView } from '@react-google-maps/api';
 import axios from 'axios';
 import DotMarker from './DotMarker';
+import VendingMachineCard from './VendingMachineCard';
+
+
 const containerStyle = {
     width: '100vw',
     height: '100vh',
@@ -12,10 +15,38 @@ const BLUE = "#4285F4"
 const YELLOW = "#FFC107"
 //-------------TEST--------------------
 const machines = [
-    { id: 1, lat: 49.2488, lng: -122.9995, color: GREEN },
-    { id: 2, lat: 49.249, lng: -122.998, color: YELLOW },
-    { id: 3, lat: 49.248, lng: -122.999, color: RED },
-    { id: 4, lat: 49.24887, lng: -122.9999, color: BLUE },
+    {
+        id: 1,
+        lat: 49.2488,
+        lng: -122.9995,
+        color: GREEN,
+        title: 'Machine A',
+        items: ['Cola', 'Chips', 'Candy']
+    },
+    {
+        id: 2,
+        lat: 49.249,
+        lng: -122.998,
+        color: YELLOW,
+        title: 'Machine B',
+        items: ['Water', 'Gum']
+    },
+    {
+        id: 3,
+        lat: 49.248,
+        lng: -122.999,
+        color: RED,
+        title: 'Machine C',
+        items: ['Energy Drink', 'Protein Bar']
+    },
+    {
+        id: 4,
+        lat: 49.24887,
+        lng: -122.9999,
+        color: BLUE,
+        title: 'Machine D',
+        items: ['Soda', 'Chips', 'Pretzels']
+    },
 ];
 //---------TEST--------------------
 interface MapProps {
@@ -34,6 +65,8 @@ const Map = ({ center, zoom, marker }: MapProps) => {
     const [apiKey, setApiKey] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [activeMarkerId, setActiveMarkerId] = useState<number | null>(null);
+
 
     useEffect(() => {
         const fetchKey = async () => {
@@ -61,14 +94,40 @@ const Map = ({ center, zoom, marker }: MapProps) => {
                 center={center}
                 zoom={zoom}
             >
-                {marker && <Marker position={marker} />}
-                {machines.map((location) => (
+                {machines.map((machine) => (
                     <DotMarker
-                        key={location.id}
-                        position={{ lat: location.lat, lng: location.lng }}
-                        color={location.color}
+                        key={machine.id}
+                        position={{ lat: machine.lat, lng: machine.lng }}
+                        color={machine.color}
+                        onClick={() => {
+                            if (activeMarkerId === machine.id) {
+                                setActiveMarkerId(null);
+                            } else {
+                                setActiveMarkerId(machine.id);
+                            }
+                        }}
                     />
                 ))}
+
+                {/* Show InfoWindow only for the active machine */}
+                {machines.map((machine) => {
+                    if (machine.id !== activeMarkerId) return null;
+                    return (
+                        <OverlayView
+                            key={machine.id}
+                            position={{ lat: machine.lat, lng: machine.lng }}
+                            mapPaneName={OverlayView.FLOAT_PANE}
+                        >
+                            <div style={{ transform: 'translate(-50%, -100%)' }}>
+                                <VendingMachineCard
+                                    title={machine.title}
+                                    items={machine.items}
+                                    onClose={() => setActiveMarkerId(null)}
+                                />
+                            </div>
+                        </OverlayView>
+                    );
+                })}
             </GoogleMap>
         </LoadScript>
     );

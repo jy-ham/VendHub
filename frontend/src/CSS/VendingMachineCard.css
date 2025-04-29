@@ -1,0 +1,190 @@
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Container that wraps the entire card */
+.card-container {
+    position: relative;
+    width: 200px;
+    height: 250px;
+    background-color: transparent;
+    border-radius: 15px;
+    animation-name: fade-in;
+    animation-duration: 2s;
+    animation-fill-mode: forwards;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/*
+   "Upper" section of the card; hidden until hover triggers the .show class.
+*/
+.upper-card {
+    display: flex;
+    justify-content: space-between;
+    background-color: lightblue;
+    border-radius: 15px 15px 0 0;
+    position: absolute;
+    left: 0;
+    right: 0;
+    padding-block: 1rem;
+    padding-inline: 0.5rem;
+    padding-block-end: 0;
+    z-index: 1;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    top: 60px;
+    opacity: 0;
+    transition-delay: 0s;
+}
+
+/*
+   The .show class is toggled (on hover, or on click).
+   This moves the upper-card into place and makes it visible.
+*/
+.upper-card.show {
+    overflow: auto;
+    top: 0;
+    opacity: 1;
+    padding-block-end: 2rem;
+    transition-delay: 0.5s;
+}
+
+.upper-card-section {
+    display: flex;
+    justify-content: center;
+}
+.upper-card-section > *:nth-child(1) {
+    margin-inline-end: 0.5rem;
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+/*
+   "Center" section of the card; displayed in the middle with an image or summary.
+   By default, sits at the bottom half. On hover, it shrinks to let the upper
+   and lower sections expand.
+*/
+.center-card {
+    position: absolute;
+    top: 170px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    background: white;
+    border: 1px solid lightgrey;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    transition-delay: 0.5s;
+}
+
+.center-card.hovering {
+    top: 60px;
+    bottom: 110px;
+    transition-delay: 0s;
+}
+
+.center-card > img {
+    width: 4rem;
+    height: 4rem;
+    margin-inline-end: 1rem;
+}
+
+/*
+   "Lower" section; hidden until .show triggers. Moves upward and
+   becomes visible on hover.
+*/
+.lower-card {
+    display: flex;
+    flex-direction: column;
+    background-color: lightblue;
+    border-radius: 0 0 15px 15px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    padding-block-start: 0;
+    z-index: 1;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    bottom: 110px;
+    opacity: 0;
+    transition-delay: 0s;
+}
+
+.lower-card.show {
+    overflow: auto;
+    bottom: 0;
+    opacity: 1;
+    padding-block-start: 2rem;
+    transition-delay: 0.5s;
+}
+
+/* Layout for rows in the lower portion of the card */
+.lower-card-row {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+    padding-inline: 0.5rem;
+    padding-block-end: 0.5rem;
+}
+
+.lower-card-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.lower-card-section > *:nth-child(1) {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-block-end: 0.25rem;
+}
+
+/*
+   Footer or “status” area at the bottom of the lower card.
+*/
+.lower-card-footer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0 0 15px 15px;
+    padding: 0.5rem;
+}
+
+.lower-card-footer.bg-grey {
+    background-color: grey;
+}
+.lower-card-footer.bg-yellow {
+    background-color: yellow;
+}
+.lower-card-footer.bg-green {
+    background-color: green;
+}
+.lower-card-footer.bg-red {
+    background-color: red;
+}
+
+.text-md {
+    font-size: 14px;
+}
+.text-sm {
+    font-size: 12px;
+}
+.weight-semi-bold {
+    font-weight: 600;
+}
+.info-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}

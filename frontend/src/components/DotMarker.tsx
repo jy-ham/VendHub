@@ -17,12 +17,14 @@ const DotMarker = ({
     size = 20,
     borderColor = 'white',
     borderWidth = 2,
+    onClick,
 }: DotMarkerProps) => {
     return (
         <Marker
             position={position}
+            onClick={onClick}
             icon={{
-                path: window.google.maps.SymbolPath.CIRCLE,
+                path: window.google?.maps?.SymbolPath.CIRCLE,
                 scale: size,
                 fillColor: color,
                 fillOpacity: 1,
