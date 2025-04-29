@@ -6,6 +6,7 @@ import Snickers from '../assets/snickers.png';
 interface VendingMachineCardProps {
     title: string;
     items: string[];
+    onClose?: () => void;
 }
 
 const VendingMachineCard: React.FC<VendingMachineCardProps> = ({ title, items }) => {

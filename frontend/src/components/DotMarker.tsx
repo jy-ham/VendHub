@@ -9,6 +9,7 @@ interface DotMarkerProps {
     size?: number;
     borderColor?: string;
     borderWidth?: number;
+    onClick?: () => void;
 }
 
 const DotMarker = ({
