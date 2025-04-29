@@ -6,8 +6,9 @@ import VendingMachineCard from './VendingMachineCard';
 
 
 const containerStyle = {
-    width: '100vw',
-    height: '100vh',
+    width: '100%',
+    height: '100%',
+    overflow: 'hidden'
 };
 const GREEN = "#00FF00"
 const RED = "#FF0000"

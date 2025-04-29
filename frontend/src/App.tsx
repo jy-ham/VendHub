@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 import Map from './components/Map';
 import SearchBar from './components/SearchBar';
+import "./App.css"
 
 function App() {
   const BCIT_DEFAULT_LOCATION = {
