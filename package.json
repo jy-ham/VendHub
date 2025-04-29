@@ -10,7 +10,9 @@
     "build:backend": "tsc -p backend/tsconfig.json && tsc-alias -p backend/tsconfig.json",
     "dev": "concurrently -n FRONTEND,BACKEND -c bgBlue.bold,bgGreen.bold \"npm run dev:frontend\" \"npm run dev:backend\"",
     "build": "npm run build:backend && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "generate": "drizzle-kit generate",
+    "push": "drizzle-kit push"
   },
   "repository": {
     "type": "git",
@@ -41,6 +43,7 @@
     "@react-google-maps/api": "^2.20.6",
     "axios": "^1.9.0",
     "dotenv": "^16.5.0",
+    "drizzle-kit": "^0.31.0",
     "drizzle-orm": "^0.42.0",
     "hono": "^4.7.7",
     "postgres": "^3.4.5",
