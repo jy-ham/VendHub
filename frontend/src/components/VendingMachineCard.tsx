@@ -39,11 +39,17 @@ const VendingMachineCard: React.FC<VendingMachineCardProps> = ({ title, items })
 
             {/* The “lower” portion */}
             <div className={`lower-card ${hovered ? 'show' : ''}`}>
-                <div className="lower-card-row">
-                    <div className="lower-card-section">
+                <div className="lower-card-list">
+                    {items.map((item, index) => (
+                        <div key={index} className="lower-card-row">
+                            <img src={Snickers} alt="Snickers" />
+                            <p className="text-sm">{item}</p>
+                        </div>
+                    ))}
+                    {/* <div className="lower-card-section">
                         <img src={Snickers} alt="Icon" />
                         <p className="text-sm">{items.length} items</p>
-                    </div>
+                    </div> */}
                 </div>
 
                 {/* The footer */}

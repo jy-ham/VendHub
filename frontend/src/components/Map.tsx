@@ -10,46 +10,7 @@ const containerStyle = {
     height: '100%',
     overflow: 'hidden'
 };
-const GREEN = "#00FF00"
-const RED = "#FF0000"
-const BLUE = "#4285F4"
-const YELLOW = "#FFC107"
-//-------------TEST--------------------
-const machines = [
-    {
-        id: 1,
-        lat: 49.2488,
-        lng: -122.9995,
-        color: GREEN,
-        title: 'Machine A',
-        items: ['Cola', 'Chips', 'Candy']
-    },
-    {
-        id: 2,
-        lat: 49.249,
-        lng: -122.998,
-        color: YELLOW,
-        title: 'Machine B',
-        items: ['Water', 'Gum']
-    },
-    {
-        id: 3,
-        lat: 49.248,
-        lng: -122.999,
-        color: RED,
-        title: 'Machine C',
-        items: ['Energy Drink', 'Protein Bar']
-    },
-    {
-        id: 4,
-        lat: 49.24887,
-        lng: -122.9999,
-        color: BLUE,
-        title: 'Machine D',
-        items: ['Soda', 'Chips', 'Pretzels']
-    },
-];
-//---------TEST--------------------
+
 interface MapProps {
     center: {
         lat: number;
@@ -62,7 +23,34 @@ interface MapProps {
     };
 }
 
+interface VendingMachine {
+    id: number;
+    location: string;
+    desc: string;
+    available: boolean;
+    lat: number;
+    lon: number;
+    items: string;
+    createdAt: string;
+}
+
 const Map = ({ center, zoom, marker }: MapProps) => {
+
+    const [machines, setMachines] = useState<VendingMachine[]>([]);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const res = await axios.get('http://localhost:3001/api/vending-machine');
+                console.log('Fetched machines:', res.data);
+                setMachines(res.data);
+            } catch (error) {
+                console.error('Error fetching vending machine data:', error);
+            }
+        };
+
+        fetchData();
+    }, []);
+
     const [apiKey, setApiKey] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -98,8 +86,8 @@ const Map = ({ center, zoom, marker }: MapProps) => {
                 {machines.map((machine) => (
                     <DotMarker
                         key={machine.id}
-                        position={{ lat: machine.lat, lng: machine.lng }}
-                        color={machine.color}
+                        position={{ lat: Number(machine.lat), lng: Number(machine.lon) }}
+                        color={machine.available ? 'GREEN' : 'RED'}
                         onClick={() => {
                             if (activeMarkerId === machine.id) {
                                 setActiveMarkerId(null);
@@ -116,13 +104,13 @@ const Map = ({ center, zoom, marker }: MapProps) => {
                     return (
                         <OverlayView
                             key={machine.id}
-                            position={{ lat: machine.lat, lng: machine.lng }}
+                            position={{ lat: Number(machine.lat), lng: Number(machine.lon) }}
                             mapPaneName={OverlayView.FLOAT_PANE}
                         >
                             <div style={{ transform: 'translate(-50%, -100%)' }}>
                                 <VendingMachineCard
-                                    title={machine.title}
-                                    items={machine.items}
+                                    title={machine.location}
+                                    items={JSON.parse(machine.items)}
                                     onClose={() => setActiveMarkerId(null)}
                                 />
                             </div>
