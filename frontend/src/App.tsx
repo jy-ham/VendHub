@@ -1,16 +1,16 @@
-
-import { useState } from 'react';
-import { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
-import Map from './components/Map';
-import SearchBar from './components/SearchBar';
+import { useState } from "react";
+import { geocodeByAddress, getLatLng } from "react-places-autocomplete";
+import Map from "./components/Map";
+import SearchBar from "./components/SearchBar";
 import "./App.css";
-import Add from './components/Add';
+import Add from "./components/Add";
 
 function App() {
   const BCIT_DEFAULT_LOCATION = {
     lat: 49.2488,
-    lng: -122.9995
+    lng: -122.9995,
   };
+
   const [center, setCenter] = useState(BCIT_DEFAULT_LOCATION);
 
   const handleSearch = async (query: string) => {
@@ -19,7 +19,7 @@ function App() {
       const latLng = await getLatLng(results[0]);
       setCenter(latLng);
     } catch (err) {
-      console.error('Search failed:', err);
+      console.error("Search failed:", err);
     }
   };
 
@@ -31,8 +31,10 @@ function App() {
       <div className="map-container">
         <Map center={center} zoom={18} />
       </div>
-      <div style={{ position: 'fixed', top: '20px', left: '20px', zIndex: 1000 }}>
-        <Add/>
+      <div
+        style={{ position: "fixed", top: "20px", left: "20px", zIndex: 1000 }}
+      >
+        <Add />
       </div>
     </div>
   );
