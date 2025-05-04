@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { GoogleMap, LoadScript, OverlayView } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, OverlayView, Marker} from '@react-google-maps/api';
 import axios from 'axios';
 import DotMarker from './DotMarker';
 import VendingMachineCard from './VendingMachineCard';
@@ -21,6 +21,7 @@ interface MapProps {
         lat: number;
         lng: number;
     };
+    onMapClick?: () => void;
 }
 
 interface VendingMachine {
@@ -34,7 +35,7 @@ interface VendingMachine {
     createdAt: string;
 }
 
-const Map = ({ center, zoom, marker }: MapProps) => {
+const Map = ({ center, zoom, marker, onMapClick}: MapProps) => {
 
     const [machines, setMachines] = useState<VendingMachine[]>([]);
     useEffect(() => {
@@ -82,7 +83,9 @@ const Map = ({ center, zoom, marker }: MapProps) => {
                 mapContainerStyle={containerStyle}
                 center={center}
                 zoom={zoom}
+                onClick={onMapClick}
             >
+            <Marker position={marker} />
                 {machines.map((machine) => (
                     <DotMarker
                         key={machine.id}

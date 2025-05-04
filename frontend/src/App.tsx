@@ -12,24 +12,28 @@ function App() {
     lng: -122.9995
   };
   const [center, setCenter] = useState(BCIT_DEFAULT_LOCATION);
+  const [markerPosition, setMarkerPosition] = useState(BCIT_DEFAULT_LOCATION);
+  const [dismissSuggestions, setDismissSuggestions] = useState(false);
 
-  const handleSearch = async (query: string) => {
-    try {
-      const results = await geocodeByAddress(query);
-      const latLng = await getLatLng(results[0]);
-      setCenter(latLng);
-    } catch (err) {
-      console.error('Search failed:', err);
-    }
+  const handleSearch = (location: { lat: number; lng: number }) => {
+    setCenter(location);
+    setMarkerPosition(location)
   };
 
+  const handleMapClick = () => {
+    setDismissSuggestions(true);
+  };
   return (
     <div className="app-container">
       <div className="search-bar-wrapper">
-        <SearchBar onSearch={handleSearch} />
+        <SearchBar 
+          onSearch={handleSearch} 
+          dismissSuggestions={dismissSuggestions}
+          setDismissSuggestions={setDismissSuggestions}
+          />
       </div>
       <div className="map-container">
-        <Map center={center} zoom={18} />
+        <Map center={center} zoom={18} marker={markerPosition} onMapClick={handleMapClick}/>
       </div>
       <div style={{ position: 'fixed', top: '20px', left: '20px', zIndex: 1000 }}>
         <Add/>
