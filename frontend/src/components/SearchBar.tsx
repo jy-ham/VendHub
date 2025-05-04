@@ -1,4 +1,5 @@
 import '../CSS/SearchBar.css';
+import {BCIT_BUILDINGS} from '../data/BCIT_BUILDINGS';
 import { useEffect, useState } from 'react';
 
 interface SearchBarProps {
@@ -6,14 +7,6 @@ interface SearchBarProps {
     dismissSuggestions: boolean;
     setDismissSuggestions: (val: boolean) => void;
 }
-
-const BCIT_BUILDINGS = [
-    { name: "SW1", lat: 49.250951, lng: -123.002089 },
-    { name: "SW3", lat: 49.2500523, lng: -123.003196 },
-    { name: "NE2", lat: 49.2533603, lng: -123.0008343 },
-    // Add more buildings here...
-];
-
 
 const SearchBar = ({ onSearch, dismissSuggestions, setDismissSuggestions }: SearchBarProps) => {
     const [input, setInput] = useState('');
