@@ -4,7 +4,7 @@ import axios from 'axios';
 import DotMarker from './DotMarker';
 import VendingMachineCard from './VendingMachineCard';
 import { VendingMachine } from '../@types/VendingMachine';
-import MultiMachineCard from './multiMachineCard';
+import MultiMachineCard from './MultiMachineCard';
 
 
 const containerStyle = {
