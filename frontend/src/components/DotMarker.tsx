@@ -15,7 +15,7 @@ interface DotMarkerProps {
 const DotMarker = ({
     position,
     color = '#00FF00',
-    size = 20,
+    size = 10,
     borderColor = 'white',
     borderWidth = 2,
     onClick,
