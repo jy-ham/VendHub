@@ -1,0 +1,228 @@
+.switch {
+    position: relative;
+    display: flex;
+    justify-content: flex-end;
+    width: 36px;
+    height: 20px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 20px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 14px;
+    width: 14px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #4caf50;
+}
+
+input:checked + .slider:before {
+    transform: translateX(16px);
+}
+
+.add-vending-machine-card {
+    background-color: #f7f8fc;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    font-family: sans-serif;
+  }
+  
+  .add-vending-machine-top-row {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 12px;
+    /* gap: 8px */
+  }
+  
+  .add-vending-machine-save-button {
+    background-color: transparent;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+  }
+  
+  .add-vending-machine-close-button {
+    background-color: transparent;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+  }
+  
+  .add-vending-machine-image-upload {
+    margin-bottom: 16px;
+  }
+  
+  .add-vending-machine-placeholder {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #eaeaea;
+    height: 150px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  
+  .add-vending-machine-placeholder-plus {
+    font-size: 32px;
+    color: #aaa;
+  }
+  
+  .add-vending-machine-preview-image {
+    width: 100%;
+    border-radius: 8px;
+  }
+  
+  .add-vending-machine-input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    outline: none;
+  }
+  
+  .add-vending-machine-textarea {
+    width: 100%;
+    padding: 10px;
+    height: 60px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    resize: none;
+    margin-bottom: 12px;
+  }
+  
+  .add-vending-machine-item-input-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  
+  .add-vending-machine-add-item-button {
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    font-size: 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .add-vending-machine-item-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .add-vending-machine-item-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f0f0f0;
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin-bottom: 6px;
+  }
+
+  .vending-machine-item-name {
+    flex-grow: 1;
+    text-align: left;
+  }
+
+  .vendingmachine-item-controls {
+    display: flex;
+    align-items: center;
+  }
+  
+  .add-vending-machine-remove-button {
+    background-color: transparent;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+  }
+  
+  /* Toggle switch style (you might already have this) */
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 36px;
+    height: 20px;
+  }
+  
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 20px;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 14px;
+    width: 14px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+  }
+  
+  input:checked + .slider {
+    background-color: #4caf50;
+  }
+  
+  input:checked + .slider:before {
+    transform: translateX(16px);
+  }
+  
+  /* Optional: Rounded slider */
+  .slider.round {
+    border-radius: 34px;
+  }
+  
+  .slider.round:before {
+    border-radius: 50%;
+  }

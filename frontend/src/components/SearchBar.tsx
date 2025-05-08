@@ -1,4 +1,4 @@
-import '../CSS/SearchBar.css';
+import '../css/SearchBar.css';
 import { useState } from 'react';
 
 interface SearchBarProps {
