@@ -12,7 +12,6 @@ import VendingMachineCard from "./VendingMachineCard";
 const containerStyle = {
   width: "100%",
   height: "100%",
-  overflow: "hidden",
 };
 
 interface MapProps {
@@ -73,7 +72,7 @@ const Map = ({ center, zoom, marker }: MapProps) => {
         const response = await axios.get("/api/map-key");
         setApiKey(response.data.key);
       } catch (err) {
-        setError("Failed to load map");
+        setError("Failed to load map.");
       } finally {
         setLoading(false);
       }
@@ -112,24 +111,22 @@ const Map = ({ center, zoom, marker }: MapProps) => {
             key={machine.id}
             position={{ lat: Number(machine.lat), lng: Number(machine.lon) }}
             color={machine.available ? "GREEN" : "RED"}
-            onClick={() => {
-              if (activeMarkerId === machine.id) {
-                setActiveMarkerId(null);
-              } else {
-                setActiveMarkerId(machine.id);
-              }
-            }}
+            onClick={() =>
+              setActiveMarkerId(
+                activeMarkerId === machine.id ? null : machine.id
+              )
+            }
           />
         ))}
 
-        {/* User Location Marker (blue dot) */}
-        {userLocation && (
+        {/* User Location Marker */}
+        {userLocation && window.google?.maps?.SymbolPath && (
           <Marker
             position={userLocation}
             icon={{
               path: window.google.maps.SymbolPath.CIRCLE,
               scale: 10,
-              fillColor: "#4285F4", // Google blue
+              fillColor: "#4285F4",
               fillOpacity: 1,
               strokeColor: "white",
               strokeWeight: 2,
@@ -137,10 +134,9 @@ const Map = ({ center, zoom, marker }: MapProps) => {
           />
         )}
 
-        {/* Show InfoWindow only for the active machine */}
-        {machines.map((machine) => {
-          if (machine.id !== activeMarkerId) return null;
-          return (
+        {/* Info Window for Active Machine */}
+        {machines.map((machine) =>
+          machine.id === activeMarkerId ? (
             <OverlayView
               key={machine.id}
               position={{ lat: Number(machine.lat), lng: Number(machine.lon) }}
@@ -149,13 +145,19 @@ const Map = ({ center, zoom, marker }: MapProps) => {
               <div style={{ transform: "translate(-50%, -100%)" }}>
                 <VendingMachineCard
                   title={machine.location}
-                  items={JSON.parse(machine.items)}
+                  items={(() => {
+                    try {
+                      return JSON.parse(machine.items);
+                    } catch {
+                      return [];
+                    }
+                  })()}
                   onClose={() => setActiveMarkerId(null)}
                 />
               </div>
             </OverlayView>
-          );
-        })}
+          ) : null
+        )}
       </GoogleMap>
     </LoadScript>
   );
