@@ -4,7 +4,7 @@ import { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 import Map from './components/Map';
 import SearchBar from './components/SearchBar';
 import "./App.css";
-import Add from './components/Add';
+
 
 
 function App() {
@@ -44,9 +44,7 @@ function App() {
           setMutiMachine = {setMutiMachine}
           onMapClick={handleMapClick}/>
       </div>
-      <div style={{ position: 'fixed', top: '20px', left: '20px', zIndex: 1000 }}>
-        <Add/>
-      </div>
+     
     </div>
   );
 }

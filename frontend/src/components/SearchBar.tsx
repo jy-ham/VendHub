@@ -1,6 +1,7 @@
 import '../CSS/SearchBar.css';
 import {BCIT_BUILDINGS} from '../data/BCIT_BUILDINGS';
 import { useEffect, useState } from 'react';
+import Add from './Add';
 
 interface SearchBarProps {
     onSearch: (location: { lat: number; lng: number }) => void;
@@ -46,24 +47,29 @@ const SearchBar = ({ onSearch, dismissSuggestions, setDismissSuggestions }: Sear
 
     return (
         <div className="search-container">
-            <form onSubmit={handleSubmit} className="search-form">
-                <div className = "input-container">
-                    <input
-                        className="search-input"
-                        type="text"
-                        placeholder="Search...(e.g., SW1)"
-                        value={input}
-                        onChange={handleChange}
-                    />
-                    {suggestions.length > 0 && (
-                        <ul className="suggestions-list">
-                            {suggestions.map((b, i) => (
-                                <li key={i} onClick={() => handleSelect(b)}>{b.name}</li>
-                            ))}
-                        </ul>
-                    )}
-                </div>
-            </form>
+            <div style={{ width:'20%' }}>
+                <Add/>
+            </div>
+            <div style={{width:'80%'}}>
+                <form onSubmit={handleSubmit} className="search-form">
+                    <div className = "input-container">
+                        <input
+                            className="search-input"
+                            type="text"
+                            placeholder="Search...(e.g., SW1)"
+                            value={input}
+                            onChange={handleChange}
+                        />
+                        {suggestions.length > 0 && (
+                            <ul className="suggestions-list">
+                                {suggestions.map((b, i) => (
+                                    <li key={i} onClick={() => handleSelect(b)}>{b.name}</li>
+                                ))}
+                            </ul>
+                        )}
+                    </div>
+                </form>           
+            </div>
         </div>
     );
 };
