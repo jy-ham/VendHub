@@ -35,10 +35,6 @@ body,
     width: 100%;
 }
 
-.add-button {
-    margin-left: 20px;
-}
-
 /* Additional mobile styles */
 @media (max-width: 480px) {
     .search-bar-wrapper {

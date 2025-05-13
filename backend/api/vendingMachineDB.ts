@@ -23,7 +23,6 @@ const supabase = createClient(
 vendMachine.get('/vending-machine', async (c) => {
   const result = await db.select().from(vendingMachine);
 
-  console.log(result);
   return c.json(result);
 });
 
@@ -58,7 +57,6 @@ vendMachine.post('/vending-machine', async (c) => {
     //const { lat, lon, location, desc, available = true, items, image } = body;
 
     const body = await c.req.parseBody({ all: true });
-    console.log("Received: ", body);
 
     const lat = body.lat as string;
     const lon = body.lon as string;
