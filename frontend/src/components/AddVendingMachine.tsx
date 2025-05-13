@@ -1,5 +1,6 @@
 import React, { useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import '../css/AddVendingMachine.css';
+import { useLocation } from './SharedContext';
 
 interface Item {
   name: string;
@@ -11,10 +12,13 @@ interface Props {
   isOpen: boolean;
 }
 
+type Location = {
+  lat: number;
+  lng: number;
+}
+
 const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen }) => {
-  // TODO: get lat/lon based on?
-  const lat = '49.248500';
-  const lon = '-123.011700';
+  const { getCurrentLocation } = useLocation();
 
   const [location, setLocation] = useState('');
   const [description, setDescription] = useState('');
@@ -25,15 +29,15 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen }) => {
   const [available, setAvailable] = useState(true);
 
   useEffect(() => {
-  if (isOpen) {
-    setLocation('');
-    setDescription('');
-    setPhoto(null);
-    setPhotoPreview(null);
-    setItemInput('');
-    setItems([]);
-    setAvailable(true);
-  }
+    if (isOpen) {
+      setLocation('');
+      setDescription('');
+      setPhoto(null);
+      setPhotoPreview(null);
+      setItemInput('');
+      setItems([]);
+      setAvailable(true);
+    }
   }, [isOpen]);
 
   const handlePhotoChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -64,16 +68,27 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen }) => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    
-    console.log("Uploading: ", { description, photo, available, items });
+
+    let position: Location | null = null;
+
+    try {
+      position = await getCurrentLocation();
+      console.log("Current position:", position.lat, position.lng);
+    } catch (e) {
+      console.log("Failed to get current location:", e);
+    };
+
+    console.log("Uploading: ", { position, description, photo, available, items });
     
     const formData = new FormData();
     formData.append('location', location);
     formData.append('desc', description);
     formData.append('available', available ? 'true' : 'false');
-    formData.append('lat', lat);
-    formData.append('lon', lon);
-
+    if (position) {
+      formData.append('lat', position.lat.toString());
+      formData.append('lon', position.lng.toString());
+    }
+    
     if (photo instanceof File) {
       formData.append('image', photo);
     }
