@@ -4,8 +4,6 @@ import { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 import Map from './components/Map';
 import SearchBar from './components/SearchBar';
 import "./App.css";
-import AddButton from './components/AddButton';
-
 
 function App() {
   const BCIT_DEFAULT_LOCATION = {
@@ -29,9 +27,6 @@ function App() {
   return (
     <div className="app-container">
       <div className="search-bar-wrapper">
-        <div className="add-button">
-          <AddButton/>
-        </div>
         <SearchBar 
           onSearch={handleSearch} 
           dismissSuggestions={dismissSuggestions}
@@ -46,7 +41,7 @@ function App() {
           mutiMachine = {mutiMachine} 
           setMutiMachine = {setMutiMachine}
           onMapClick={handleMapClick}/>
-      </div>
+      </div>917de5e3ac8106664
     </div>
   );
 }

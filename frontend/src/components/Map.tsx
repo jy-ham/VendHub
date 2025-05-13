@@ -34,7 +34,7 @@ const Map = ({ center, zoom, marker, mutiMachine, setMutiMachine, onMapClick}: M
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await axios.get('http://localhost:3001/api/vending-machine');
+                const res = await axios.get('/api/vending-machine');
                 console.log('Fetched machines:', res.data);
                 setMachines(res.data);
             } catch (error) {
