@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../CSS/VendingMachineCard.css';
+import '../css/VendingMachineCard.css';
 import vendingMachine from '../assets/vending1.png';
 import Coke from '../assets/coke.png';
 import Snickers from '../assets/snickers.png';

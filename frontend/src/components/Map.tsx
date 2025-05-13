@@ -5,6 +5,7 @@ import DotMarker from "./DotMarker";
 import VendingMachineCard from "./VendingMachineCard";
 import MultiMachineCard from "./MultiMachineCard";
 import { VendingMachine } from "../@types/VendingMachine";
+import { useLocation } from './SharedContext';
 
 const containerStyle = {
   width: "100%",
@@ -36,12 +37,13 @@ const Map = ({ center, zoom, marker, mutiMachine, setMutiMachine, onMapClick }: 
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [machinesAtClickedLocation, setMachinesAtClickedLocation] = useState<VendingMachine[]>([]);
   const mapRef = useRef<google.maps.Map | null>(null);
+  const { getCurrentLocation } = useLocation();
 
   // Fetch vending machine data
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get("http://localhost:3001/api/vending-machine");
+        const res = await axios.get("/api/vending-machine");
         setMachines(res.data);
       } catch (error) {
         console.error("Error fetching vending machine data:", error);
@@ -67,19 +69,20 @@ const Map = ({ center, zoom, marker, mutiMachine, setMutiMachine, onMapClick }: 
 
   // Ask for user location
   useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setUserLocation({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          });
-        },
-        (error) => {
-          console.error("Failed to get user location", error);
-        }
-      );
+    const getLocation = async () => {
+      try {
+        const position = await getCurrentLocation();
+        setUserLocation({
+          lat: position.lat,
+          lng: position.lng
+        });
+        console.log("Location:", { position });
+      } catch (e) {
+        console.error("Failed to get user location", e);
+      }
     }
+
+    getLocation();
   }, []);
 
   if (loading) return <div>Loading map...</div>;
