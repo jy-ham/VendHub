@@ -5,12 +5,19 @@ import { eq } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import { vendingMachine } from '../schema/VendingMachine.js';
+import { createClient } from '@supabase/supabase-js';
 
 export const vendMachine = new Hono();
 vendMachine.use(cors());
 
 const client = postgres(process.env.DATABASE_URL!, { prepare: false });
 export const db = drizzle(client);
+
+// For uploading image
+const supabase = createClient(
+  process.env.SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
 // Get all vending machine info
 vendMachine.get('/vending-machine', async (c) => {
@@ -45,14 +52,50 @@ vendMachine.get('/vending-machine/:id', async (c) => {
 // Post vending machine info
 vendMachine.post('/vending-machine', async (c) => {
   try {
-    const body = await c.req.json();
+    //const body = await c.req.json();
 
-    const { lat, lon, location, desc, available = true, items } = body;
+    //const { lat, lon, location, desc, available = true, items, image } = body;
+
+    const body = await c.req.parseBody({ all: true });
+
+    const lat = body.lat as string;
+    const lon = body.lon as string;
+    const location = body.location as string;
+    const desc = body.desc as string;
+    const available = body.available !== undefined ? body.available === 'true' : true;
+    const items = body.items as string;
+    const image = body.image;
+    
 
     // Optional: Add basic type checks
-    if (!lat || !lon || !location || !desc || !items) {
-      return c.json({ error: 'Missing required fields' }, 400);
+    if (!lat || !lon || !location || !desc || !items || !(image instanceof File)) {
+      return c.json({ error: 'Missing required fields or image file' }, 400);
     }
+
+    // Upload to Supabase Storage
+    const buffer = Buffer.from(await image.arrayBuffer());
+    const fileName = `${Date.now()}-${image.name}`;
+    const { error: uploadError } = await supabase.storage
+      .from('vendingmachines') 
+      .upload(fileName, buffer, {
+        contentType: image.type,
+        upsert: true,
+      });
+
+    if (uploadError) {
+      console.error(uploadError);
+      return c.json({ error: 'Image upload failed' }, 500);
+    }
+
+    const { data: urlData } = supabase.storage
+      .from('vendingmachines')
+      .getPublicUrl(fileName);
+
+    if (!urlData?.publicUrl) {
+      return c.json({ error: 'Image URL generation failed' }, 500);
+    }
+
+    const imageUrl = urlData.publicUrl;
 
     await db.insert(vendingMachine).values({
       lat,
@@ -60,7 +103,8 @@ vendMachine.post('/vending-machine', async (c) => {
       location,
       desc,
       available,
-      items
+      items,
+      imageUrl
     });
 
     return c.json({ message: 'Vending machine added successfully' }, 201);
@@ -69,5 +113,4 @@ vendMachine.post('/vending-machine', async (c) => {
     console.error(err);
     return c.json({ error: 'Internal Server Error' }, 500);
   }
-
 });

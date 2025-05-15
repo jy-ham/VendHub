@@ -8,5 +8,6 @@ export const vendingMachine = pgTable('vendingMachine', {
   desc: text('desc').notNull(),
   available: boolean('available').default(true).notNull(),
   items: text('items').notNull(),
+  imageUrl: text('imageUrl'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });

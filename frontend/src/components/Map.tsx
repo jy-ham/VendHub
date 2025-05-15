@@ -1,13 +1,10 @@
-import { useState, useEffect } from "react";
-import {
-  GoogleMap,
-  LoadScript,
-  OverlayView,
-  Marker,
-} from "@react-google-maps/api";
+import { useState, useEffect, useRef } from "react";
+import { GoogleMap, LoadScript, OverlayView, Marker } from "@react-google-maps/api";
 import axios from "axios";
 import DotMarker from "./DotMarker";
 import VendingMachineCard from "./VendingMachineCard";
+import MultiMachineCard from "./MultiMachineCard";
+import { VendingMachine } from "../@types/VendingMachine";
 
 const containerStyle = {
   width: "100%",
@@ -24,44 +21,31 @@ interface MapProps {
     lat: number;
     lng: number;
   };
+  mutiMachine: boolean;
+  setMutiMachine: (value: boolean) => void;
+  onMapClick?: () => void;
 }
 
-interface VendingMachine {
-  id: number;
-  location: string;
-  desc: string;
-  available: boolean;
-  lat: number;
-  lon: number;
-  items: string;
-  createdAt: string;
-}
-
-const Map = ({ center, zoom, marker }: MapProps) => {
+const Map = ({ center, zoom, marker, mutiMachine, setMutiMachine, onMapClick }: MapProps) => {
   const [machines, setMachines] = useState<VendingMachine[]>([]);
   const [apiKey, setApiKey] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeMarkerId, setActiveMarkerId] = useState<number | null>(null);
-  const [userLocation, setUserLocation] = useState<{
-    lat: number;
-    lng: number;
-  } | null>(null);
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [machinesAtClickedLocation, setMachinesAtClickedLocation] = useState<VendingMachine[]>([]);
+  const mapRef = useRef<google.maps.Map | null>(null);
 
   // Fetch vending machine data
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(
-          "http://localhost:3001/api/vending-machine"
-        );
-        console.log("Fetched machines:", res.data);
+        const res = await axios.get("http://localhost:3001/api/vending-machine");
         setMachines(res.data);
       } catch (error) {
         console.error("Error fetching vending machine data:", error);
       }
     };
-
     fetchData();
   }, []);
 
@@ -77,7 +61,6 @@ const Map = ({ center, zoom, marker }: MapProps) => {
         setLoading(false);
       }
     };
-
     fetchKey();
   }, []);
 
@@ -102,25 +85,55 @@ const Map = ({ center, zoom, marker }: MapProps) => {
   if (error) return <div>{error}</div>;
   if (!apiKey) return <div>Map unavailable</div>;
 
+  const findMachinesAtLocation = (clickedLat: number, clickedLon: number) => {
+    const PROXIMITY_THRESHOLD = 0.00001;
+    return machines.filter((machine) => {
+      const latDiff = Math.abs(machine.lat - clickedLat);
+      const lonDiff = Math.abs(machine.lon - clickedLon);
+      return latDiff < PROXIMITY_THRESHOLD && lonDiff < PROXIMITY_THRESHOLD;
+    });
+  };
+
+  const handleMarkerClick = (machine: VendingMachine) => {
+    const machinesAtLocation = findMachinesAtLocation(machine.lat, machine.lon);
+    setMachinesAtClickedLocation(machinesAtLocation);
+    mapRef.current?.panTo({ lat: Number(machine.lat), lng: Number(machine.lon) });
+
+    if (machinesAtLocation.length > 1) {
+      setMutiMachine(true);
+    } else if (machinesAtLocation.length === 1) {
+      setMutiMachine(false);
+      if (activeMarkerId === machine.id) {
+        setActiveMarkerId(null);
+      } else {
+        setActiveMarkerId(machine.id);
+      }
+    }
+  };
+
   return (
     <LoadScript googleMapsApiKey={apiKey}>
-      <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={zoom}>
-        {/* Vending Machine Markers */}
+      <GoogleMap
+        mapContainerStyle={containerStyle}
+        center={center}
+        zoom={zoom}
+        onClick={onMapClick}
+        onLoad={(map: google.maps.Map) => {
+          mapRef.current = map;
+        }}
+      >
+        {marker && <Marker position={marker} />}
+
         {machines.map((machine) => (
           <DotMarker
             key={machine.id}
             position={{ lat: Number(machine.lat), lng: Number(machine.lon) }}
             color={machine.available ? "GREEN" : "RED"}
-            onClick={() =>
-              setActiveMarkerId(
-                activeMarkerId === machine.id ? null : machine.id
-              )
-            }
+            onClick={() => handleMarkerClick(machine)}
           />
         ))}
 
-        {/* User Location Marker */}
-        {userLocation && window.google?.maps?.SymbolPath && (
+        {userLocation && (
           <Marker
             position={userLocation}
             icon={{
@@ -134,29 +147,47 @@ const Map = ({ center, zoom, marker }: MapProps) => {
           />
         )}
 
-        {/* Info Window for Active Machine */}
-        {machines.map((machine) =>
-          machine.id === activeMarkerId ? (
-            <OverlayView
-              key={machine.id}
-              position={{ lat: Number(machine.lat), lng: Number(machine.lon) }}
-              mapPaneName={OverlayView.FLOAT_PANE}
-            >
-              <div style={{ transform: "translate(-50%, -100%)" }}>
-                <VendingMachineCard
-                  title={machine.location}
-                  items={(() => {
-                    try {
-                      return JSON.parse(machine.items);
-                    } catch {
-                      return [];
-                    }
-                  })()}
-                  onClose={() => setActiveMarkerId(null)}
-                />
-              </div>
-            </OverlayView>
-          ) : null
+        {!mutiMachine &&
+          machines.map((machine) => {
+            if (machine.id !== activeMarkerId) return null;
+            return (
+              <OverlayView
+                key={machine.id}
+                position={{ lat: Number(machine.lat), lng: Number(machine.lon) }}
+                mapPaneName={OverlayView.FLOAT_PANE}
+              >
+                <div style={{ transform: "translate(-50%, -100%)" }}>
+                  <VendingMachineCard
+                    title={machine.location}
+                    items={(() => {
+                      try {
+                        return JSON.parse(machine.items);
+                      } catch {
+                        return [];
+                      }
+                    })()}
+                    onClose={() => setActiveMarkerId(null)}
+                  />
+                </div>
+              </OverlayView>
+            );
+          })}
+
+        {mutiMachine && machinesAtClickedLocation.length > 0 && (
+          <OverlayView
+            position={{
+              lat: machinesAtClickedLocation[0].lat,
+              lng: machinesAtClickedLocation[0].lon,
+            }}
+            mapPaneName={OverlayView.FLOAT_PANE}
+          >
+            <div style={{ transform: "translate(-50%, -100%)" }}>
+              <MultiMachineCard
+                machines={machinesAtClickedLocation}
+                onClose={() => setMutiMachine(false)}
+              />
+            </div>
+          </OverlayView>
         )}
       </GoogleMap>
     </LoadScript>
