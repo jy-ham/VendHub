@@ -1,8 +1,9 @@
 import { useState } from "react";
+import { LocationProvider } from "./components/SharedContext";
 import Map from "./components/Map";
 import SearchBar from "./components/SearchBar";
-import Add from "./components/Add";
 import "./App.css";
+
 
 function App() {
   const BCIT_DEFAULT_LOCATION = {
@@ -26,28 +27,26 @@ function App() {
   };
 
   return (
-    <div className="app-container">
-      <div className="search-bar-wrapper">
-        <SearchBar 
-          onSearch={handleSearch} 
-          dismissSuggestions={dismissSuggestions}
-          setDismissSuggestions={setDismissSuggestions}
-        />
+    <LocationProvider>
+      <div className="app-container">
+        <div className="search-bar-wrapper">
+          <SearchBar 
+            onSearch={handleSearch} 
+            dismissSuggestions={dismissSuggestions}
+            setDismissSuggestions={setDismissSuggestions}
+          />
+        </div>
+        <div className="map-container">
+          <Map 
+            center={center} 
+            zoom={18} 
+            marker={markerPosition} 
+            mutiMachine = {mutiMachine} 
+            setMutiMachine = {setMutiMachine}
+            onMapClick={handleMapClick}/>
+        </div>
       </div>
-      <div className="map-container">
-        <Map 
-          center={center} 
-          zoom={18} 
-          marker={markerPosition} 
-          mutiMachine={mutiMachine} 
-          setMutiMachine={setMutiMachine}
-          onMapClick={handleMapClick}
-        />
-      </div>
-      <div style={{ position: "fixed", top: "20px", left: "20px", zIndex: 1000 }}>
-        <Add />
-      </div>
-    </div>
+    </LocationProvider>
   );
 }
 
