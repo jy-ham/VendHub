@@ -1,7 +1,8 @@
-import '../CSS/SearchBar.css';
+
+import '../css/SearchBar.css';
 import {BCIT_BUILDINGS} from '../data/BCIT_BUILDINGS';
 import { useEffect, useState } from 'react';
-import Add from './Add';
+import AddButton from './AddButton';
 
 interface SearchBarProps {
     onSearch: (location: { lat: number; lng: number }) => void;
@@ -48,7 +49,7 @@ const SearchBar = ({ onSearch, dismissSuggestions, setDismissSuggestions }: Sear
     return (
         <div className="search-container">
             <div style={{ width:'20%' }}>
-                <Add/>
+                <AddButton/>
             </div>
             <div style={{width:'80%'}}>
                 <form onSubmit={handleSubmit} className="search-form">
