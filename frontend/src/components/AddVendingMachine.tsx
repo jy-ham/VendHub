@@ -18,7 +18,7 @@ type Location = {
 }
 
 const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen }) => {
-  const { getCurrentLocation } = useLocation();
+  const { getCurrentLocation, locationPermissions } = useLocation();
 
   const [location, setLocation] = useState('');
   const [description, setDescription] = useState('');
@@ -27,6 +27,8 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen }) => {
   const [itemInput, setItemInput] = useState('');
   const [items, setItems] = useState<Item[]>([]);
   const [available, setAvailable] = useState(true);
+  const [position, setPosition] = useState<Location>();
+  const [loadingPosition, setLoadingPosition] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -37,15 +39,48 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen }) => {
       setItemInput('');
       setItems([]);
       setAvailable(true);
+      handlePosition();
     }
   }, [isOpen]);
 
-  const handlePhotoChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setPhoto(file);
-      setPhotoPreview(URL.createObjectURL(file));
+  useEffect(() => {
+    if (!photo) {
+      setPhotoPreview(null);
+      return;
     }
+
+    const objectUrl = URL.createObjectURL(photo);
+    setPhotoPreview(objectUrl);
+
+    return () => {
+      URL.revokeObjectURL(objectUrl);
+    };
+  }, [photo]);
+
+  const handlePosition = async () => {
+    if (locationPermissions === 'denied') {
+      console.log(locationPermissions);
+      alert("You've denied location access. Please enable it in your browser settings. Adding a new vending machine requires your current location");
+      onClose();
+      return;
+    }
+
+    setLoadingPosition(true);
+    
+    try {
+      const pos = await getCurrentLocation();
+      console.log("Current position:", pos.lat, pos.lng);
+      setPosition({ lat: pos.lat, lng: pos.lng });
+    } catch (e) {
+      console.log("Failed to get current location:", e);
+    } finally {
+      setLoadingPosition(false);
+    };
+  }
+
+  const handlePhotoChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] ?? null;
+    setPhoto(file);
   };
 
   const handleAddItem = () => {
@@ -68,15 +103,6 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen }) => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-
-    let position: Location | null = null;
-
-    try {
-      position = await getCurrentLocation();
-      console.log("Current position:", position.lat, position.lng);
-    } catch (e) {
-      console.log("Failed to get current location:", e);
-    };
 
     console.log("Uploading: ", { position, description, photo, available, items });
     
@@ -116,11 +142,12 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen }) => {
   return (
     <form onSubmit={handleSubmit} className="add-vending-machine-card">
       <div className="add-vending-machine-top-row">
-        <label className="switch">
+        <label className="switch" title="Toggle vending machine availability">
           <input type="checkbox" checked={available} onChange={() => setAvailable(!available)} />
           <span className="slider"></span>
         </label>
-        <button type="submit" className="add-vending-machine-save-button">💾</button>
+        <button type="button" onClick={handlePosition} className="location-button" title="Get current location" disabled={loadingPosition}>📍</button>
+        <button type="submit" className="add-vending-machine-save-button" title="Add new vending machine">💾</button>
         <button type="button" onClick={onClose} className="add-vending-machine-close-button">&times;</button>
       </div>
 
