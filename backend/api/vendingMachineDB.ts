@@ -3,7 +3,7 @@ import { cors } from 'hono/cors';
 import 'dotenv/config';
 import { eq } from 'drizzle-orm';
 import { vendingMachine } from '../schema/VendingMachine.js';
-import {db, supabase} from '@api/dbConnection.js'
+import {db, supabase} from './dbConnection.js'
 // import { drizzle } from 'drizzle-orm/postgres-js';
 // import postgres from 'postgres';
 // import { createClient } from '@supabase/supabase-js';
