@@ -62,6 +62,13 @@ input:checked + .slider:before {
     margin-bottom: 12px;
     /* gap: 8px */
   }
+
+  .location-button {
+    background-color: transparent;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+  }
   
   .add-vending-machine-save-button {
     background-color: transparent;
