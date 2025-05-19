@@ -2,7 +2,7 @@ import { useState } from "react";
 import { LocationProvider } from "./components/SharedContext";
 import Map from "./components/Map";
 import SearchBar from "./components/SearchBar";
-import Add from "./components/Add";
+import Add from "./components/AddButton";
 import UserAuthForm from "./components/UserAuthForm";
 import "./App.css";
 
