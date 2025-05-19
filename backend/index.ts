@@ -3,6 +3,7 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { mapRoutes } from './api/mapRoutes.js';
 import { vendMachine } from './api/vendingMachineDB.js';
+import { userAuth } from './api/userAuth.js';
 import { serve } from '@hono/node-server';
 
 const app = new Hono();
@@ -13,6 +14,7 @@ app.use('*', cors());
 // Register map routes under `/api`
 app.route('/api', mapRoutes);
 app.route('/api', vendMachine);
+app.route('/api', userAuth);
 
 // Start server
 const PORT = Number(process.env.PORT) || 3001;
