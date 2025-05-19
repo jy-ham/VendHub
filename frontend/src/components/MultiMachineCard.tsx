@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
-import '../CSS/MultiMachineCard.css';
+import '../css/MultiMachineCard.css';
 import { VendingMachine } from '../@types/VendingMachine';
 
 interface MultiMachineCardProps {

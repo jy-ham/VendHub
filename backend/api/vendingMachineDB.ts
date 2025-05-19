@@ -2,22 +2,23 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import 'dotenv/config';
 import { eq } from 'drizzle-orm';
-import { drizzle } from 'drizzle-orm/postgres-js';
-import postgres from 'postgres';
 import { vendingMachine } from '../schema/VendingMachine.js';
-import { createClient } from '@supabase/supabase-js';
+import {db, supabase} from './dbConnection.js'
+// import { drizzle } from 'drizzle-orm/postgres-js';
+// import postgres from 'postgres';
+// import { createClient } from '@supabase/supabase-js';
 
 export const vendMachine = new Hono();
 vendMachine.use(cors());
 
-const client = postgres(process.env.DATABASE_URL!, { prepare: false });
-export const db = drizzle(client);
+// const client = postgres(process.env.DATABASE_URL!, { prepare: false });
+// const db = drizzle(client);
 
-// For uploading image
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+// // For uploading image
+// const supabase = createClient(
+//   process.env.SUPABASE_URL!,
+//   process.env.SUPABASE_SERVICE_ROLE_KEY!
+// );
 
 // Get all vending machine info
 vendMachine.get('/vending-machine', async (c) => {
@@ -52,9 +53,6 @@ vendMachine.get('/vending-machine/:id', async (c) => {
 // Post vending machine info
 vendMachine.post('/vending-machine', async (c) => {
   try {
-    //const body = await c.req.json();
-
-    //const { lat, lon, location, desc, available = true, items, image } = body;
 
     const body = await c.req.parseBody({ all: true });
 

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { LocationProvider } from "./components/SharedContext";
 import Map from "./components/Map";
 import SearchBar from "./components/SearchBar";
 import Add from "./components/Add";
@@ -24,46 +25,49 @@ function App() {
   };
 
   return (
-    <div className="app-container relative">
-      {/* Top-right Login Button */}
-      <button className="login-button" onClick={() => setShowAuth(true)}>
-        Login / Signup
-      </button>
+    <LocationProvider>
+      <div className="app-container relative">
+        {/* Top-right Login Button */}
+        <button className="login-button" onClick={() => setShowAuth(true)}>
+          Login / Signup
+        </button>
 
-      {/* Search Bar */}
-      <div className="search-bar-wrapper">
-        <SearchBar 
-          onSearch={handleSearch} 
-          dismissSuggestions={dismissSuggestions}
-          setDismissSuggestions={setDismissSuggestions}
-        />
-      </div>
-
-      {/* Map Display */}
-      <div className="map-container">
-        <Map 
-          center={center} 
-          zoom={18} 
-          marker={markerPosition} 
-          mutiMachine={mutiMachine} 
-          setMutiMachine={setMutiMachine}
-          onMapClick={handleMapClick}
-        />
-      </div>
-      
-      {/* Add Button */}
-      <div style={{ position: "fixed", top: "20px", left: "20px", zIndex: 1000 }}>
-        <Add />
-      </div>
-
-      {showAuth && (
-        <div className="auth-modal">
-          <div className="auth-modal-content">
-            <UserAuthForm onClose={() => setShowAuth(false)} />
-          </div>
+        {/* Search Bar */}
+        <div className="search-bar-wrapper">
+          <SearchBar 
+            onSearch={handleSearch} 
+            dismissSuggestions={dismissSuggestions}
+            setDismissSuggestions={setDismissSuggestions}
+          />
         </div>
-      )}
-    </div>
+
+        {/* Map Display */}
+        <div className="map-container">
+          <Map 
+            center={center} 
+            zoom={18} 
+            marker={markerPosition} 
+            mutiMachine={mutiMachine} 
+            setMutiMachine={setMutiMachine}
+            onMapClick={handleMapClick}
+          />
+        </div>
+
+        {/* Add Button */}
+        <div style={{ position: "fixed", top: "20px", left: "20px", zIndex: 1000 }}>
+          <Add />
+        </div>
+
+        {/* Auth Modal */}
+        {showAuth && (
+          <div className="auth-modal">
+            <div className="auth-modal-content">
+              <UserAuthForm onClose={() => setShowAuth(false)} />
+            </div>
+          </div>
+        )}
+      </div>
+    </LocationProvider>
   );
 }
 

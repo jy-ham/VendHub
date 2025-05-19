@@ -1,11 +1,12 @@
-import "dotenv/config";
-import { Hono } from "hono";
-import type { Context } from "hono";
-import { cors } from "hono/cors";
-import { mapRoutes } from "./api/mapRoutes.js";
-import { vendMachine } from "./api/vendingMachineDB.js";
-import { authRoutes } from "./api/authRoutes.js";
-import { serve } from "@hono/node-server";
+import 'dotenv/config';
+import { Hono } from 'hono';
+import type { Context } from 'hono';
+import { cors } from 'hono/cors';
+import { mapRoutes } from './api/mapRoutes.js';
+import { vendMachine } from './api/vendingMachineDB.js';
+import { authRoutes } from './api/authRoutes.js';
+import { userAuth } from './api/userAuth.js';
+import { serve } from '@hono/node-server';
 
 type Env = {
   Variables: {
@@ -24,9 +25,10 @@ app.use("/api/*", async (c, next) => {
 });
 
 // Register map routes under `/api`
-app.route("/api", mapRoutes);
-app.route("/api", vendMachine);
-app.route("/api", authRoutes);
+app.route('/api', mapRoutes);
+app.route('/api', vendMachine);
+app.route('/api', authRoutes);
+app.route('/api', userAuth);
 
 // Start server
 const PORT = Number(process.env.PORT) || 3001;
