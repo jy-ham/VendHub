@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { GoogleMap, LoadScript, OverlayView, Marker } from "@react-google-maps/api";
+import { GoogleMap, OverlayView, Marker } from "@react-google-maps/api";
 import axios from "axios";
 import DotMarker from "./DotMarker";
 import VendingMachineCard from "./VendingMachineCard";
@@ -29,9 +29,7 @@ interface MapProps {
 
 const Map = ({ center, zoom, marker, mutiMachine, setMutiMachine, onMapClick }: MapProps) => {
   const [machines, setMachines] = useState<VendingMachine[]>([]);
-  const [apiKey, setApiKey] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+
   const [activeMarkerId, setActiveMarkerId] = useState<number | null>(null);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [machinesAtClickedLocation, setMachinesAtClickedLocation] = useState<VendingMachine[]>([]);
@@ -51,20 +49,8 @@ const Map = ({ center, zoom, marker, mutiMachine, setMutiMachine, onMapClick }: 
     fetchData();
   }, []);
 
-  // Fetch Google Maps API key
-  useEffect(() => {
-    const fetchKey = async () => {
-      try {
-        const response = await axios.get("/api/map-key");
-        setApiKey(response.data.key);
-      } catch (err) {
-        setError("Failed to load map.");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchKey();
-  }, []);
+
+
 
   // Ask for user location
   useEffect(() => {
@@ -84,9 +70,7 @@ const Map = ({ center, zoom, marker, mutiMachine, setMutiMachine, onMapClick }: 
     getLocation();
   }, []);
 
-  if (loading) return <div>Loading map...</div>;
-  if (error) return <div>{error}</div>;
-  if (!apiKey) return <div>Map unavailable</div>;
+
 
   const findMachinesAtLocation = (clickedLat: number, clickedLon: number) => {
     const PROXIMITY_THRESHOLD = 0.00001;
@@ -115,7 +99,7 @@ const Map = ({ center, zoom, marker, mutiMachine, setMutiMachine, onMapClick }: 
   };
 
   return (
-    <LoadScript googleMapsApiKey={apiKey}>
+    
       <GoogleMap
         mapContainerStyle={containerStyle}
         center={center}
@@ -193,7 +177,7 @@ const Map = ({ center, zoom, marker, mutiMachine, setMutiMachine, onMapClick }: 
           </OverlayView>
         )}
       </GoogleMap>
-    </LoadScript>
+   
   );
 };
 

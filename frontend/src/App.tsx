@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { LocationProvider } from "./components/SharedContext";
 import Map from "./components/Map";
 import SearchBar from "./components/SearchBar";
 import Add from "./components/AddButton";
 import UserAuthForm from "./components/UserAuthForm";
+import {LoadScript} from "@react-google-maps/api";
+import axios from "axios";
 import "./App.css";
 
 function App() {
@@ -13,6 +15,9 @@ function App() {
   const [dismissSuggestions, setDismissSuggestions] = useState(false);
   const [mutiMachine, setMutiMachine] = useState<boolean>(false);
   const [showAuth, setShowAuth] = useState(false);
+  const [apiKey, setApiKey] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSearch = (location: { lat: number; lng: number }) => {
     setCenter(location);
@@ -23,51 +28,70 @@ function App() {
     setDismissSuggestions(true);
     setMutiMachine(false);
   };
-
+  // Fetch Google Maps API key
+    useEffect(() => {
+      const fetchKey = async () => {
+        try {
+          const response = await axios.get("/api/map-key");
+          setApiKey(response.data.key);
+        } catch (err) {
+          setError("Failed to load map.");
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchKey();
+    }, []);
+  if (loading) return <div>Loading map...</div>;
+  if (error) return <div>{error}</div>;
+  if (!apiKey) return <div>Map unavailable</div>;
   return (
-    <LocationProvider>
-      <div className="app-container relative">
-        {/* Top-right Login Button */}
-        <button className="login-button" onClick={() => setShowAuth(true)}>
-          Login / Signup
-        </button>
+    <LoadScript googleMapsApiKey={apiKey}>
+        <LocationProvider>
+          <div className="app-container relative">
+            {/* Top-right Login Button */}
+            <button className="login-button" onClick={() => setShowAuth(true)}>
+              Login / Signup
+            </button>
 
-        {/* Search Bar */}
-        <div className="search-bar-wrapper">
-          <SearchBar 
-            onSearch={handleSearch} 
-            dismissSuggestions={dismissSuggestions}
-            setDismissSuggestions={setDismissSuggestions}
-          />
-        </div>
-
-        {/* Map Display */}
-        <div className="map-container">
-          <Map 
-            center={center} 
-            zoom={18} 
-            marker={markerPosition} 
-            mutiMachine={mutiMachine} 
-            setMutiMachine={setMutiMachine}
-            onMapClick={handleMapClick}
-          />
-        </div>
-
-        {/* Add Button */}
-        <div style={{ position: "fixed", top: "20px", left: "20px", zIndex: 1000 }}>
-          <Add />
-        </div>
-
-        {/* Auth Modal */}
-        {showAuth && (
-          <div className="auth-modal">
-            <div className="auth-modal-content">
-              <UserAuthForm onClose={() => setShowAuth(false)} />
+            {/* Search Bar */}
+            <div className="search-bar-wrapper">
+              <SearchBar 
+                onSearch={handleSearch} 
+                dismissSuggestions={dismissSuggestions}
+                setDismissSuggestions={setDismissSuggestions}
+              />
             </div>
+
+            {/* Map Display */}
+            <div className="map-container">
+              <Map 
+                center={center} 
+                zoom={18} 
+                marker={markerPosition} 
+                mutiMachine={mutiMachine} 
+                setMutiMachine={setMutiMachine}
+                onMapClick={handleMapClick}
+              />
+            </div>
+
+            {/* Add Button */}
+            <div style={{ position: "fixed", top: "20px", left: "20px", zIndex: 1000 }}>
+              <Add />
+            </div>
+
+            {/* Auth Modal */}
+            {showAuth && (
+              <div className="auth-modal">
+                <div className="auth-modal-content">
+                  <UserAuthForm onClose={() => setShowAuth(false)} />
+                </div>
+              </div>
+            )}
           </div>
-        )}
-      </div>
-    </LocationProvider>
+      </LocationProvider>
+    </LoadScript>
+    
   );
 }
 
