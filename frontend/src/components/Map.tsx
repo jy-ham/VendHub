@@ -135,7 +135,7 @@ const Map = ({ center, zoom, marker, mutiMachine, setMutiMachine, onMapClick }: 
           />
         ))}
 
-        {userLocation && (
+        {userLocation && window.google && window.google.maps && (
           <Marker
             position={userLocation}
             icon={{
