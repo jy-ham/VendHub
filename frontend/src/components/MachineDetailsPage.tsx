@@ -77,72 +77,77 @@ const MachineDetailPage: React.FC = () => {
 
   return (
     <div className="machine-detail-page">
-      <button className="md-back" onClick={() => navigate(-1)}>
-        ← Back
-      </button>
-      <div className="md-card">
-        <header className="md-header">
-          <h1>{machine.location}</h1>
-          <span
-            className={
-              machine.available ? "md-badge available" : "md-badge unavailable"
-            }
-          >
-            {machine.available ? "Available" : "Unavailable"}
-          </span>
-        </header>
-
-        <div className="md-content">
-          <div className="md-image">
-            <img
-              src={
-                machine.coverImageURL
-                  ? `https://admin.chtp.com/files/${machine.coverImageURL}`
-                  : VendingMachineImg
+      <div className="back-wrapper">
+        <button className="md-back" onClick={() => navigate(-1)}>
+          ← Back
+        </button>
+      </div>
+      <div className="md-card-wrapper">
+        <div className="md-card">
+          <header className="md-header">
+            <h1>{machine.location}</h1>
+            <span
+              className={
+                machine.available
+                  ? "md-badge available"
+                  : "md-badge unavailable"
               }
-              alt={machine.desc}
-            />
-          </div>
+            >
+              {machine.available ? "Available" : "Unavailable"}
+            </span>
+          </header>
 
-          <div className="md-info">
-            <p className="md-desc">{machine.desc}</p>
-            <div className="md-meta">
-              <div>
-                Rating: <strong>{machine.rating ?? 0}/5</strong>
-              </div>
-              <div>
-                Reviews: <strong>{machine.reviewsCount ?? 0}</strong>
-              </div>
-              <div>
-                ID: <strong>{machine.id}</strong>
-              </div>
+          <div className="md-content">
+            <div className="md-image">
+              <img
+                src={
+                  machine.coverImageURL
+                    ? `https://admin.chtp.com/files/${machine.coverImageURL}`
+                    : VendingMachineImg
+                }
+                alt={machine.desc}
+              />
             </div>
 
-            <section className="md-items">
-              <h2>Items</h2>
-              <ul>
-                {itemsList.map((it, idx) => (
-                  <li
-                    key={idx}
-                    className={
-                      it.available ? "item-available" : "item-unavailable"
-                    }
-                  >
-                    {it.available ? <CheckCircleIcon /> : <CancelIcon />}
-                    <span>{it.name}</span>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          </div>
-        </div>
+            <div className="md-info">
+              <p className="md-desc">{machine.desc}</p>
+              <div className="md-meta">
+                <div>
+                  Rating: <strong>{machine.rating ?? 0}/5</strong>
+                </div>
+                <div>
+                  Reviews: <strong>{machine.reviewsCount ?? 0}</strong>
+                </div>
+                <div>
+                  ID: <strong>{machine.id}</strong>
+                </div>
+              </div>
 
-        <div className="md-legend">
-          <div>
-            <CheckCircleIcon className="icon-available" /> Available
+              <section className="md-items">
+                <h2>Items</h2>
+                <ul>
+                  {itemsList.map((it, idx) => (
+                    <li
+                      key={idx}
+                      className={
+                        it.available ? "item-available" : "item-unavailable"
+                      }
+                    >
+                      {it.available ? <CheckCircleIcon /> : <CancelIcon />}
+                      <span>{it.name}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            </div>
           </div>
-          <div>
-            <CancelIcon className="icon-unavailable" /> Out of stock
+          <div className="md-legend">
+            <div>
+              <CheckCircleIcon className="icon-available" /> Available
+            </div>
+            <div>
+              <CancelIcon className="icon-unavailable" /> Out of stock
+            </div>
           </div>
         </div>
       </div>

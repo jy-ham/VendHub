@@ -50,13 +50,18 @@ const MultiMachineCard: React.FC<MultiMachineCardProps> = ({
                   </p>
                 </div>
               </div>
-              <div style={{ width: "30%" }}>
+              <div
+                style={{
+                  width: "30%",
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
                 {" "}
                 {/* MUI Button to go to detail page */}
                 <Button
                   variant="contained"
                   size="small"
-                  sx={{ marginLeft: "auto" }}
                   onClick={() => handleDetailsClick(machine.id)}
                 >
                   Details

@@ -5,6 +5,7 @@ import DotMarker from "./DotMarker";
 import MultiMachineCard from "./MultiMachineCard";
 import { VendingMachine } from "../@types/VendingMachine";
 import { useLocation } from "./SharedContext";
+import "../css/Map.css";
 
 const containerStyle = {
   width: "100%",
@@ -89,8 +90,8 @@ const Map = ({
     const machinesAtLocation = findMachinesAtLocation(machine.lat, machine.lon);
     setMachinesAtClickedLocation(machinesAtLocation);
     mapRef.current?.panTo({
-      lat: Number(machine.lat) + 0.0004,
-      lng: Number(machine.lon) + 0.0006,
+      lat: Number(machine.lat),
+      lng: Number(machine.lon),
     });
 
     if (machinesAtLocation.length >= 1) {
@@ -135,34 +136,18 @@ const Map = ({
         />
       )}
 
-      {!mutiMachine &&
-        machines.map((machine) => {
-          return (
-            <OverlayView
-              key={machine.id}
-              position={{ lat: Number(machine.lat), lng: Number(machine.lon) }}
-              mapPaneName={OverlayView.FLOAT_PANE}
-            >
-              <div style={{ transform: "translate(-50%, -100%)" }}></div>
-            </OverlayView>
-          );
-        })}
-
       {mutiMachine && machinesAtClickedLocation.length > 0 && (
-        <OverlayView
-          position={{
-            lat: machinesAtClickedLocation[0].lat,
-            lng: machinesAtClickedLocation[0].lon,
+        <div
+          className="slide-up-card"
+          style={{
+            transform: "translate(-50%, -100%)",
           }}
-          mapPaneName={OverlayView.FLOAT_PANE}
         >
-          <div style={{ transform: "translate(-50%, -100%)" }}>
-            <MultiMachineCard
-              machines={machinesAtClickedLocation}
-              onClose={() => setMutiMachine(false)}
-            />
-          </div>
-        </OverlayView>
+          <MultiMachineCard
+            machines={machinesAtClickedLocation}
+            onClose={() => setMutiMachine(false)}
+          />
+        </div>
       )}
     </GoogleMap>
   );
