@@ -39,7 +39,11 @@
     "vite": "^6.3.2"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
     "@hono/node-server": "^1.14.1",
+    "@mui/icons-material": "^7.1.0",
+    "@mui/material": "^7.1.0",
     "@react-google-maps/api": "^2.20.6",
     "@supabase/supabase-js": "^2.49.4",
     "argon2": "^0.43.0",
@@ -53,6 +57,7 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-places-autocomplete": "^7.3.0",
+    "react-router-dom": "^7.6.0",
     "zod": "^3.24.4"
   }
 }

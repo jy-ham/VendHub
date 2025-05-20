@@ -151,36 +151,25 @@ const Map = ({ center, zoom, marker, mutiMachine, setMutiMachine, onMapClick }: 
         )}
 
         {!mutiMachine &&
-          machines.map((machine) => {
-            if (machine.id !== activeMarkerId) return null;
+            machines.map((machine) => {
             return (
               <OverlayView
                 key={machine.id}
                 position={{ lat: Number(machine.lat), lng: Number(machine.lon) }}
                 mapPaneName={OverlayView.FLOAT_PANE}
               >
-                <div style={{ transform: "translate(-50%, -100%)" }}>
-                  <VendingMachineCard
-                    title={machine.location}
-                    items={(() => {
-                      try {
-                        return JSON.parse(machine.items);
-                      } catch {
-                        return [];
-                      }
-                    })()}
-                    onClose={() => setActiveMarkerId(null)}
-                  />
+                <div style={{transform: "translate(-50%, -100%)"}}>
+
                 </div>
               </OverlayView>
             );
-          })}
+            })}
 
         {mutiMachine && machinesAtClickedLocation.length > 0 && (
-          <OverlayView
-            position={{
-              lat: machinesAtClickedLocation[0].lat,
-              lng: machinesAtClickedLocation[0].lon,
+            <OverlayView
+                position={{
+                  lat: machinesAtClickedLocation[0].lat,
+                  lng: machinesAtClickedLocation[0].lon,
             }}
             mapPaneName={OverlayView.FLOAT_PANE}
           >

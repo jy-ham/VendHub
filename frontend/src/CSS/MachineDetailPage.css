@@ -1,0 +1,145 @@
+/* MachineDetailPage.css */
+
+.machine-detail-page {
+    font-family: 'Open Sans', sans-serif;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.md-back {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    padding: 6px 12px;
+    background: #f0f0f0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+.md-back:hover {
+    background: #e0e0e0;
+}
+
+.md-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    max-width: 900px;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+.md-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fafafa;
+    padding: 16px 24px;
+    border-bottom: 1px solid #eee;
+}
+.md-header h1 {
+    margin: 0;
+    font-size: 24px;
+}
+.md-badge {
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+}
+.md-badge.available {
+    background: #e6f4ea;
+    color: #237a49;
+}
+.md-badge.unavailable {
+    background: #fbeeee;
+    color: #a12323;
+}
+
+.md-content {
+    display: flex;
+    gap: 24px;
+    padding: 24px;
+}
+.md-image {
+    flex: 1;
+}
+.md-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.md-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.md-desc {
+    font-size: 16px;
+    color: #333;
+}
+.md-meta {
+    display: flex;
+    gap: 16px;
+    font-size: 14px;
+    color: #555;
+}
+
+.md-items {
+    background: #f9f9f9;
+    padding: 16px;
+    border-radius: 6px;
+}
+.md-items h2 {
+    margin-top: 0;
+    font-size: 18px;
+    color: #333;
+}
+.md-items ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.md-items li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 0;
+    border-bottom: 1px solid #e0e0e0;
+}
+.md-items li:last-child {
+    border-bottom: none;
+}
+.item-available svg {
+    color: #237a49;
+}
+.item-unavailable svg {
+    color: #a12323;
+}
+.item-name {
+    font-size: 15px;
+    color: #333;
+}
+
+.md-legend {
+    display: flex;
+    gap: 16px;
+    font-size: 13px;
+    color: #555;
+    position: absolute;
+    bottom: 16px;
+    right: 24px;
+    background: rgba(255,255,255,0.95);
+    padding: 8px 12px;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+.md-legend svg {
+    vertical-align: middle;
+    margin-right: 4px;
+}
