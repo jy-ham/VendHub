@@ -2,10 +2,9 @@ import { useState, useEffect, useRef } from "react";
 import { GoogleMap, OverlayView, Marker } from "@react-google-maps/api";
 import axios from "axios";
 import DotMarker from "./DotMarker";
-import VendingMachineCard from "./VendingMachineCard";
 import MultiMachineCard from "./MultiMachineCard";
 import { VendingMachine } from "../@types/VendingMachine";
-import { useLocation } from './SharedContext';
+import { useLocation } from "./SharedContext";
 
 const containerStyle = {
   width: "100%",
@@ -27,12 +26,22 @@ interface MapProps {
   onMapClick?: () => void;
 }
 
-const Map = ({ center, zoom, marker, mutiMachine, setMutiMachine, onMapClick }: MapProps) => {
+const Map = ({
+  center,
+  zoom,
+  marker,
+  mutiMachine,
+  setMutiMachine,
+  onMapClick,
+}: MapProps) => {
   const [machines, setMachines] = useState<VendingMachine[]>([]);
-
-  const [activeMarkerId, setActiveMarkerId] = useState<number | null>(null);
-  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
-  const [machinesAtClickedLocation, setMachinesAtClickedLocation] = useState<VendingMachine[]>([]);
+  const [userLocation, setUserLocation] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
+  const [machinesAtClickedLocation, setMachinesAtClickedLocation] = useState<
+    VendingMachine[]
+  >([]);
   const mapRef = useRef<google.maps.Map | null>(null);
   const { getCurrentLocation } = useLocation();
 
@@ -49,9 +58,6 @@ const Map = ({ center, zoom, marker, mutiMachine, setMutiMachine, onMapClick }: 
     fetchData();
   }, []);
 
-
-
-
   // Ask for user location
   useEffect(() => {
     const getLocation = async () => {
@@ -59,18 +65,16 @@ const Map = ({ center, zoom, marker, mutiMachine, setMutiMachine, onMapClick }: 
         const position = await getCurrentLocation();
         setUserLocation({
           lat: position.lat,
-          lng: position.lng
+          lng: position.lng,
         });
         console.log("Location:", { position });
       } catch (e) {
         console.error("Failed to get user location", e);
       }
-    }
+    };
 
     getLocation();
   }, []);
-
-
 
   const findMachinesAtLocation = (clickedLat: number, clickedLon: number) => {
     const PROXIMITY_THRESHOLD = 0.00001;
@@ -84,100 +88,83 @@ const Map = ({ center, zoom, marker, mutiMachine, setMutiMachine, onMapClick }: 
   const handleMarkerClick = (machine: VendingMachine) => {
     const machinesAtLocation = findMachinesAtLocation(machine.lat, machine.lon);
     setMachinesAtClickedLocation(machinesAtLocation);
-    mapRef.current?.panTo({ lat: Number(machine.lat), lng: Number(machine.lon) });
+    mapRef.current?.panTo({
+      lat: Number(machine.lat) + 0.0004,
+      lng: Number(machine.lon) + 0.0006,
+    });
 
-    if (machinesAtLocation.length > 1) {
+    if (machinesAtLocation.length >= 1) {
       setMutiMachine(true);
-    } else if (machinesAtLocation.length === 1) {
+    } else {
       setMutiMachine(false);
-      if (activeMarkerId === machine.id) {
-        setActiveMarkerId(null);
-      } else {
-        setActiveMarkerId(machine.id);
-      }
     }
   };
 
   return (
-    
-      <GoogleMap
-        mapContainerStyle={containerStyle}
-        center={center}
-        zoom={zoom}
-        onClick={onMapClick}
-        onLoad={(map: google.maps.Map) => {
-          mapRef.current = map;
-        }}
-      >
-        {marker && <Marker position={marker} />}
+    <GoogleMap
+      mapContainerStyle={containerStyle}
+      center={center}
+      zoom={zoom}
+      onClick={onMapClick}
+      onLoad={(map: google.maps.Map) => {
+        mapRef.current = map;
+      }}
+    >
+      {marker && <Marker position={marker} />}
 
-        {machines.map((machine) => (
-          <DotMarker
-            key={machine.id}
-            position={{ lat: Number(machine.lat), lng: Number(machine.lon) }}
-            color={machine.available ? "GREEN" : "RED"}
-            onClick={() => handleMarkerClick(machine)}
-          />
-        ))}
+      {machines.map((machine) => (
+        <DotMarker
+          key={machine.id}
+          position={{ lat: Number(machine.lat), lng: Number(machine.lon) }}
+          color={machine.available ? "GREEN" : "RED"}
+          onClick={() => handleMarkerClick(machine)}
+        />
+      ))}
 
-        {userLocation && window.google && window.google.maps && (
-          <Marker
-            position={userLocation}
-            icon={{
-              path: window.google.maps.SymbolPath.CIRCLE,
-              scale: 10,
-              fillColor: "#4285F4",
-              fillOpacity: 1,
-              strokeColor: "white",
-              strokeWeight: 2,
-            }}
-          />
-        )}
+      {userLocation && window.google && window.google.maps && (
+        <Marker
+          position={userLocation}
+          icon={{
+            path: window.google.maps.SymbolPath.CIRCLE,
+            scale: 10,
+            fillColor: "#4285F4",
+            fillOpacity: 1,
+            strokeColor: "white",
+            strokeWeight: 2,
+          }}
+        />
+      )}
 
-        {!mutiMachine &&
-          machines.map((machine) => {
-            if (machine.id !== activeMarkerId) return null;
-            return (
-              <OverlayView
-                key={machine.id}
-                position={{ lat: Number(machine.lat), lng: Number(machine.lon) }}
-                mapPaneName={OverlayView.FLOAT_PANE}
-              >
-                <div style={{ transform: "translate(-50%, -100%)" }}>
-                  <VendingMachineCard
-                    title={machine.location}
-                    items={(() => {
-                      try {
-                        return JSON.parse(machine.items);
-                      } catch {
-                        return [];
-                      }
-                    })()}
-                    onClose={() => setActiveMarkerId(null)}
-                  />
-                </div>
-              </OverlayView>
-            );
-          })}
+      {!mutiMachine &&
+        machines.map((machine) => {
+          return (
+            <OverlayView
+              key={machine.id}
+              position={{ lat: Number(machine.lat), lng: Number(machine.lon) }}
+              mapPaneName={OverlayView.FLOAT_PANE}
+            >
+              <div style={{ transform: "translate(-50%, -100%)" }}></div>
+            </OverlayView>
+          );
+        })}
 
-        {mutiMachine && machinesAtClickedLocation.length > 0 && (
-          <OverlayView
-            position={{
-              lat: machinesAtClickedLocation[0].lat,
-              lng: machinesAtClickedLocation[0].lon,
-            }}
-            mapPaneName={OverlayView.FLOAT_PANE}
-          >
-            <div style={{ transform: "translate(-50%, -100%)" }}>
-              <MultiMachineCard
-                machines={machinesAtClickedLocation}
-                onClose={() => setMutiMachine(false)}
-              />
-            </div>
-          </OverlayView>
-        )}
-      </GoogleMap>
-   
+      {mutiMachine && machinesAtClickedLocation.length > 0 && (
+        <OverlayView
+          position={{
+            lat: machinesAtClickedLocation[0].lat,
+            lng: machinesAtClickedLocation[0].lon,
+          }}
+          mapPaneName={OverlayView.FLOAT_PANE}
+        >
+          <div style={{ transform: "translate(-50%, -100%)" }}>
+            <MultiMachineCard
+              machines={machinesAtClickedLocation}
+              onClose={() => setMutiMachine(false)}
+            />
+          </div>
+        </OverlayView>
+      )}
+    </GoogleMap>
   );
 };
 

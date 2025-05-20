@@ -1,6 +1,6 @@
-import React, { useState, ChangeEvent, FormEvent, useEffect } from 'react';
-import '../css/AddVendingMachine.css';
-import { useLocation } from './SharedContext';
+import React, { useState, ChangeEvent, FormEvent, useEffect } from "react";
+import "../css/AddVendingMachine.css";
+import { useLocation } from "./SharedContext";
 
 interface Item {
   name: string;
@@ -15,16 +15,16 @@ interface Props {
 type Location = {
   lat: number;
   lng: number;
-}
+};
 
 const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen }) => {
   const { getCurrentLocation, locationPermissions } = useLocation();
 
-  const [location, setLocation] = useState('');
-  const [description, setDescription] = useState('');
+  const [location, setLocation] = useState("");
+  const [description, setDescription] = useState("");
   const [photo, setPhoto] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
-  const [itemInput, setItemInput] = useState('');
+  const [itemInput, setItemInput] = useState("");
   const [items, setItems] = useState<Item[]>([]);
   const [available, setAvailable] = useState(true);
   const [position, setPosition] = useState<Location>();
@@ -32,11 +32,11 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen }) => {
 
   useEffect(() => {
     if (isOpen) {
-      setLocation('');
-      setDescription('');
+      setLocation("");
+      setDescription("");
       setPhoto(null);
       setPhotoPreview(null);
-      setItemInput('');
+      setItemInput("");
       setItems([]);
       setAvailable(true);
       handlePosition();
@@ -58,15 +58,17 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen }) => {
   }, [photo]);
 
   const handlePosition = async () => {
-    if (locationPermissions === 'denied') {
+    if (locationPermissions === "denied") {
       console.log(locationPermissions);
-      alert("You've denied location access. Please enable it in your browser settings. Adding a new vending machine requires your current location");
+      alert(
+        "You've denied location access. Please enable it in your browser settings. Adding a new vending machine requires your current location"
+      );
       onClose();
       return;
     }
 
     setLoadingPosition(true);
-    
+
     try {
       const pos = await getCurrentLocation();
       console.log("Current position:", pos.lat, pos.lng);
@@ -75,8 +77,8 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen }) => {
       console.log("Failed to get current location:", e);
     } finally {
       setLoadingPosition(false);
-    };
-  }
+    }
+  };
 
   const handlePhotoChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] ?? null;
@@ -86,7 +88,7 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen }) => {
   const handleAddItem = () => {
     if (itemInput.trim()) {
       setItems([...items, { name: itemInput.trim(), available: true }]);
-      setItemInput('');
+      setItemInput("");
     }
   };
 
@@ -104,57 +106,94 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen }) => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    console.log("Uploading: ", { position, description, photo, available, items });
-    
+    console.log("Uploading: ", {
+      position,
+      description,
+      photo,
+      available,
+      items,
+    });
+
     const formData = new FormData();
-    formData.append('location', location);
-    formData.append('desc', description);
-    formData.append('available', available ? 'true' : 'false');
+    formData.append("location", location);
+    formData.append("desc", description);
+    formData.append("available", available ? "true" : "false");
     if (position) {
-      formData.append('lat', position.lat.toString());
-      formData.append('lon', position.lng.toString());
-    }
-    
-    if (photo instanceof File) {
-      formData.append('image', photo);
+      formData.append("lat", position.lat.toString());
+      formData.append("lon", position.lng.toString());
     }
 
-    formData.append('items', JSON.stringify(items));
+    if (photo instanceof File) {
+      formData.append("image", photo);
+    }
+
+    formData.append("items", JSON.stringify(items));
 
     try {
-      const response = await fetch('/api/vending-machine', {
-        method: 'POST',
-        body: formData
+      const response = await fetch("/api/vending-machine", {
+        method: "POST",
+        body: formData,
       });
 
       if (!response.ok) {
         // TODO: Error logic
-        throw new Error('Failed to upload');
+        throw new Error("Failed to upload");
       }
-      console.log('Successfully uploaded');
+      console.log("Successfully uploaded");
     } catch (error) {
-      console.log('Upload error', error);
+      console.log("Upload error", error);
     }
 
-    onClose();    
+    onClose();
   };
 
   return (
     <form onSubmit={handleSubmit} className="add-vending-machine-card">
       <div className="add-vending-machine-top-row">
         <label className="switch" title="Toggle vending machine availability">
-          <input type="checkbox" checked={available} onChange={() => setAvailable(!available)} />
+          <input
+            type="checkbox"
+            checked={available}
+            onChange={() => setAvailable(!available)}
+          />
           <span className="slider"></span>
         </label>
-        <button type="button" onClick={handlePosition} className="location-button" title="Get current location" disabled={loadingPosition}>📍</button>
-        <button type="submit" className="add-vending-machine-save-button" title="Add new vending machine">💾</button>
-        <button type="button" onClick={onClose} className="add-vending-machine-close-button">&times;</button>
+        <button
+          type="button"
+          onClick={handlePosition}
+          className="location-button"
+          title="Get current location"
+          disabled={loadingPosition}
+        >
+          📍
+        </button>
+        <button
+          type="submit"
+          className="add-vending-machine-save-button"
+          title="Add new vending machine"
+        >
+          💾
+        </button>
+        <button
+          type="button"
+          onClick={onClose}
+          className="add-vending-machine-close-button"
+        >
+          &times;
+        </button>
       </div>
 
       <div className="add-vending-machine-image-upload">
-        <label htmlFor="upload-photo" className="add-vending-machine-placeholder">
+        <label
+          htmlFor="upload-photo"
+          className="add-vending-machine-placeholder"
+        >
           {photoPreview ? (
-            <img src={photoPreview} alt="Preview" className="add-vending-machine-preview-image" />
+            <img
+              src={photoPreview}
+              alt="Preview"
+              className="add-vending-machine-preview-image"
+            />
           ) : (
             <span className="add-vending-machine-placeholder-plus">+</span>
           )}
@@ -163,7 +202,7 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen }) => {
             id="upload-photo"
             accept="image/*"
             onChange={handlePhotoChange}
-            style={{ display: 'none' }}
+            style={{ display: "none" }}
           />
         </label>
       </div>
@@ -192,7 +231,13 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen }) => {
           onChange={(e) => setItemInput(e.target.value)}
           className="add-vending-machine-input"
         />
-        <button type="button" onClick={handleAddItem} className="add-vending-machine-add-item-button">+</button>
+        <button
+          type="button"
+          onClick={handleAddItem}
+          className="add-vending-machine-add-item-button"
+        >
+          +
+        </button>
       </div>
 
       <ul className="add-vending-machine-item-list">
@@ -206,11 +251,16 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen }) => {
                   checked={item.available}
                   onChange={() => toggleItem(index)}
                 />
-              <span className="slider round"></span>
+                <span className="slider round"></span>
               </label>
-
             </div>
-            <button type="button" onClick={() => removeItem(index)} className="add-vending-machine-remove-button">×</button>
+            <button
+              type="button"
+              onClick={() => removeItem(index)}
+              className="add-vending-machine-remove-button"
+            >
+              ×
+            </button>
           </li>
         ))}
       </ul>

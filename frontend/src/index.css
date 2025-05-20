@@ -1,7 +1,7 @@
 .gm-style-iw {
-    background-color: transparent !important;
-    box-shadow: none !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
 }
 .gm-style-iw + div {
-    display: none !important;
+  display: none !important;
 }

@@ -35,18 +35,9 @@ body,
   width: 100%;
 }
 
-/* Additional mobile styles */
-@media (max-width: 480px) {
-  .search-bar-wrapper {
-    padding: 15px 10px;
-  }
-}
-
 /* Login/Signup button (top right) */
 .login-button {
-  position: absolute;
-  top: 16px;
-  right: 16px;
+  position: relative;
   background-color: #1976d2;
   color: white;
   padding: 10px 16px;

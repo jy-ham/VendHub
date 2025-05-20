@@ -1,6 +1,6 @@
-import React, { useRef, useState } from 'react';
-import AddVendingMachine from './AddVendingMachine';
-import '../css/AddButton.css';
+import React, { useRef, useState } from "react";
+import AddVendingMachine from "./AddVendingMachine";
+import "../css/AddButton.css";
 
 const AddButton: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -30,7 +30,7 @@ const AddButton: React.FC = () => {
       </button>
 
       <dialog ref={dialogRef} className="dialog" onClick={handleBackdropClick}>
-        <AddVendingMachine onClose={closeDialog} isOpen={isOpen}/>
+        <AddVendingMachine onClose={closeDialog} isOpen={isOpen} />
       </dialog>
     </>
   );

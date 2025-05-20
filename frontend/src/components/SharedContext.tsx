@@ -1,32 +1,41 @@
-import React, {createContext, useState, useContext, useCallback, useEffect } from 'react';
+import React, {
+  createContext,
+  useState,
+  useContext,
+  useCallback,
+  useEffect,
+} from "react";
 
 type Location = {
   lat: number;
   lng: number;
-}
+};
 
-type PermissionState = 'granted' | 'prompt' | 'denied';
+type PermissionState = "granted" | "prompt" | "denied";
 
 type SharedContextType = {
   location: Location | null;
   getCurrentLocation: () => Promise<Location>;
   locationPermissions: PermissionState;
-}
+};
 
 const SharedContext = createContext<SharedContextType | undefined>(undefined);
 
-export const LocationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const LocationProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [location, setLocation] = useState<Location | null>(null);
-  const [locationPermissions, setLocationPermissions] = useState<PermissionState>('prompt');
+  const [locationPermissions, setLocationPermissions] =
+    useState<PermissionState>("prompt");
 
   useEffect(() => {
     if (navigator.permissions) {
-      navigator.permissions.query({ name: 'geolocation'}).then((result) => {
+      navigator.permissions.query({ name: "geolocation" }).then((result) => {
         setLocationPermissions(result.state as PermissionState);
 
         result.onchange = () => {
           setLocationPermissions(result.state as PermissionState);
-        }
+        };
       });
     }
   }, []);
@@ -52,7 +61,9 @@ export const LocationProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   }, []);
 
   return (
-    <SharedContext.Provider value={{ location, getCurrentLocation, locationPermissions }}>
+    <SharedContext.Provider
+      value={{ location, getCurrentLocation, locationPermissions }}
+    >
       {children}
     </SharedContext.Provider>
   );
@@ -61,7 +72,7 @@ export const LocationProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 export const useLocation = () => {
   const context = useContext(SharedContext);
   if (!context) {
-    throw new Error('useLocation must be used within a LocationProvider');
+    throw new Error("useLocation must be used within a LocationProvider");
   }
   return context;
 };
