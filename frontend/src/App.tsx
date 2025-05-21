@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { LocationProvider } from "./components/SharedContext";
 import Map from "./components/Map";
 import SearchBar from "./components/SearchBar";
-import Add from "./components/AddButton";
 import UserAuthForm from "./components/UserAuthForm";
 import { LoadScript } from "@react-google-maps/api";
 import axios from "axios";
@@ -20,6 +19,7 @@ function App() {
   const [apiKey, setApiKey] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const handleSearch = (location: { lat: number; lng: number }) => {
     setCenter(location);
@@ -30,6 +30,7 @@ function App() {
     setDismissSuggestions(true);
     setMutiMachine(false);
   };
+
   // Fetch Google Maps API key
   useEffect(() => {
     const fetchKey = async () => {
@@ -42,6 +43,8 @@ function App() {
         setLoading(false);
       }
     };
+    const token = localStorage.getItem('token');
+    setIsLoggedIn(!!token);
     fetchKey();
   }, []);
   // api checking
@@ -66,6 +69,7 @@ function App() {
                       dismissSuggestions={dismissSuggestions}
                       setDismissSuggestions={setDismissSuggestions}
                       setShowAuth={setShowAuth}
+                      isLoggedIn={isLoggedIn}
                     />
                   </div>
 
@@ -84,7 +88,7 @@ function App() {
                   {showAuth && (
                     <div className="auth-modal">
                       <div className="auth-modal-content">
-                        <UserAuthForm onClose={() => setShowAuth(false)} />
+                        <UserAuthForm onClose={() => setShowAuth(false)} setIsLoggedIn={setIsLoggedIn}/>
                       </div>
                     </div>
                   )}

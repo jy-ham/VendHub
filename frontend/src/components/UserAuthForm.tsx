@@ -4,6 +4,7 @@ import axios from "axios";
 
 interface UserAuthFormProps {
   onClose: () => void;
+  setIsLoggedIn: (value: boolean) => void;
 }
 
 interface AuthResponse {
@@ -14,7 +15,7 @@ interface AuthResponse {
   };
 }
 
-const UserAuthForm = ({ onClose }: UserAuthFormProps) => {
+const UserAuthForm = ({ onClose, setIsLoggedIn }: UserAuthFormProps) => {
   const [isRegister, setIsRegister] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -39,6 +40,7 @@ const UserAuthForm = ({ onClose }: UserAuthFormProps) => {
       const { token, user } = res.data;
       localStorage.setItem("token", token);
       setMessage(`Welcome, ${user.email}!`);
+      setIsLoggedIn(true);
     } catch (err: any) {
       setError(err.response?.data?.error || "Something went wrong.");
     } finally {

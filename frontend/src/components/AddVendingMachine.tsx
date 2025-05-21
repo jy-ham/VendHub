@@ -1,6 +1,7 @@
 import React, { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import "../css/AddVendingMachine.css";
 import { useLocation } from "./SharedContext";
+import { FaRegSave, FaMapMarkerAlt } from "react-icons/fa";
 
 interface Item {
   name: string;
@@ -161,18 +162,18 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen }) => {
         <button
           type="button"
           onClick={handlePosition}
-          className="location-button"
+          className="add-vending-machine-buttons"
           title="Get current location"
           disabled={loadingPosition}
         >
-          📍
+          <FaMapMarkerAlt />
         </button>
         <button
           type="submit"
-          className="add-vending-machine-save-button"
+          className="add-vending-machine-buttons"
           title="Add new vending machine"
         >
-          💾
+          <FaRegSave />
         </button>
         <button
           type="button"
