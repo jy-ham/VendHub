@@ -2,12 +2,14 @@ import "../css/SearchBar.css";
 import { BCIT_BUILDINGS } from "../data/BCIT_BUILDINGS";
 import { useEffect, useState } from "react";
 import AddButton from "./AddButton";
+import { FaRegUser } from "react-icons/fa";
 
 interface SearchBarProps {
   onSearch: (location: { lat: number; lng: number }) => void;
   dismissSuggestions: boolean;
   setDismissSuggestions: (val: boolean) => void;
   setShowAuth: (val: boolean) => void;
+  isLoggedIn: boolean;
 }
 
 const SearchBar = ({
@@ -15,9 +17,11 @@ const SearchBar = ({
   dismissSuggestions,
   setDismissSuggestions,
   setShowAuth,
+  isLoggedIn
 }: SearchBarProps) => {
   const [input, setInput] = useState("");
   const [suggestions, setSuggestions] = useState<typeof BCIT_BUILDINGS>([]);
+
   useEffect(() => {
     if (dismissSuggestions) {
       setSuggestions([]);
@@ -54,9 +58,10 @@ const SearchBar = ({
 
   return (
     <div className="search-container">
-      {/* Add Button (top-left corner) */}
       <div style={{ width: "20%" }}>
-        <AddButton />
+        {isLoggedIn ? <AddButton /> : <button className="login-button" onClick={() => setShowAuth(true)}>
+          <FaRegUser/>
+        </button>}
       </div>
       <div style={{ width: "60%" }}>
         <form onSubmit={handleSubmit} className="search-form">
@@ -81,10 +86,6 @@ const SearchBar = ({
         </form>
       </div>
       <div style={{ width: "20%" }}>
-        {/* Top-right Login Button */}
-        <button className="login-button" onClick={() => setShowAuth(true)}>
-          Login
-        </button>
       </div>
     </div>
   );

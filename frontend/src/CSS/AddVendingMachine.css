@@ -63,18 +63,14 @@ input:checked + .slider:before {
   /* gap: 8px */
 }
 
-.location-button {
+.add-vending-machine-buttons {
   background-color: transparent;
   border: none;
   font-size: 20px;
   cursor: pointer;
-}
-
-.add-vending-machine-save-button {
-  background-color: transparent;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .add-vending-machine-close-button {
@@ -114,10 +110,32 @@ input:checked + .slider:before {
 .add-vending-machine-input {
   width: 100%;
   padding: 10px;
-  margin-bottom: 8px;
   border-radius: 8px;
   border: 1px solid #ccc;
   outline: none;
+}
+
+.add-vending-machine-location select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #fff;
+  color: #333;
+  appearance: none;
+  outline: none;
+}
+
+.add-vending-machine-location select:focus {
+  border-color: #1976d2;
+  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+}
+
+.add-vending-machine-location {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 8px 0;
 }
 
 .add-vending-machine-item-input-row {

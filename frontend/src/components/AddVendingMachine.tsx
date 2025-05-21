@@ -1,6 +1,8 @@
 import React, { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import "../css/AddVendingMachine.css";
 import { useLocation } from "./SharedContext";
+import { FaRegSave, FaMapMarkerAlt } from "react-icons/fa";
+import { BCIT_BUILDINGS } from "../data/BCIT_BUILDINGS";
 
 interface Item {
   name: string;
@@ -107,6 +109,7 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen }) => {
     e.preventDefault();
 
     console.log("Uploading: ", {
+      location,
       position,
       description,
       photo,
@@ -161,18 +164,18 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen }) => {
         <button
           type="button"
           onClick={handlePosition}
-          className="location-button"
+          className="add-vending-machine-buttons"
           title="Get current location"
           disabled={loadingPosition}
         >
-          📍
+          <FaMapMarkerAlt />
         </button>
         <button
           type="submit"
-          className="add-vending-machine-save-button"
+          className="add-vending-machine-buttons"
           title="Add new vending machine"
         >
-          💾
+          <FaRegSave />
         </button>
         <button
           type="button"
@@ -215,13 +218,19 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen }) => {
         className="add-vending-machine-input"
       />
 
-      <input
-        type="text"
-        placeholder="Where it is..."
-        value={location}
-        onChange={(e) => setLocation(e.target.value)}
-        className="add-vending-machine-input"
-      />
+      <div className="add-vending-machine-location">
+        <select
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+        >
+          <option value="">-- Choose a building --</option>
+          {BCIT_BUILDINGS.map((building) => (
+            <option key={building.name}>
+              {building.name}
+            </option>
+          ))}
+        </select>
+      </div>
 
       <div className="add-vending-machine-item-input-row">
         <input
