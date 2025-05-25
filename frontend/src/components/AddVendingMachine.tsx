@@ -1,6 +1,7 @@
 import React, { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import "../css/AddVendingMachine.css";
 import { useLocation } from "./SharedContext";
+import { VendingMachine } from "../@types/VendingMachine";
 import { FaRegSave, FaMapMarkerAlt } from "react-icons/fa";
 import { BCIT_BUILDINGS } from "../data/BCIT_BUILDINGS";
 
@@ -12,6 +13,7 @@ interface Item {
 interface Props {
   onClose: () => void;
   isOpen: boolean;
+  setMachines: React.Dispatch<React.SetStateAction<VendingMachine[]>>;
 }
 
 type Location = {
@@ -19,7 +21,7 @@ type Location = {
   lng: number;
 };
 
-const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen }) => {
+const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen, setMachines }) => {
   const { getCurrentLocation, locationPermissions } = useLocation();
 
   const [location, setLocation] = useState("");
@@ -124,6 +126,11 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen }) => {
     if (position) {
       formData.append("lat", position.lat.toString());
       formData.append("lon", position.lng.toString());
+    } else {
+      alert(
+        "There was an error in acquiring your current location. Please enable location access in your browser settings and try again."
+      );
+      return;
     }
 
     if (photo instanceof File) {
@@ -133,15 +140,27 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen }) => {
     formData.append("items", JSON.stringify(items));
 
     try {
-      const response = await fetch("/api/vending-machine", {
-        method: "POST",
-        body: formData,
-      });
+      // const response = await fetch("/api/vending-machine", {
+      //   method: "POST",
+      //   body: formData,
+      // });
 
-      if (!response.ok) {
-        // TODO: Error logic
-        throw new Error("Failed to upload");
-      }
+      // if (response.ok) {
+        setMachines(machines => [...machines, {
+          id: machines.length > 0 ? machines[machines.length - 1].id + 1 : 1,
+          location: location,
+          desc: description,
+          available: available,
+          lat: position.lat,
+          lon: position.lng,
+          items: items.toString()
+        }]);
+      // }
+
+      // if (!response.ok) {
+      //   // TODO: Error logic
+      //   throw new Error("Failed to upload");
+      // }
       console.log("Successfully uploaded");
     } catch (error) {
       console.log("Upload error", error);

@@ -6,5 +6,5 @@ export interface VendingMachine {
     lat: number;
     lon: number;
     items: string;
-    createdAt: string;
+    // createdAt: string;
 }
