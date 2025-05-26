@@ -119,6 +119,16 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen, setMachines }) =>
       items,
     });
 
+    if (!description) {
+      alert("Please enter a name");
+      return;
+    }
+    
+    if (!location) {
+      alert("Please select a building.");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("location", location);
     formData.append("desc", description);
@@ -140,14 +150,14 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen, setMachines }) =>
     formData.append("items", JSON.stringify(items));
 
     try {
-      // const response = await fetch("/api/vending-machine", {
-      //   method: "POST",
-      //   body: formData,
-      // });
+      const response = await fetch("/api/vending-machine", {
+        method: "POST",
+        body: formData,
+      });
 
-      // if (response.ok) {
+      if (response.ok) {
         setMachines(machines => [...machines, {
-          id: machines.length > 0 ? machines[machines.length - 1].id + 1 : 1,
+          // TODO: id isn't set here, so it brings up a warning when rendering a new map marker.
           location: location,
           desc: description,
           available: available,
@@ -155,12 +165,12 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen, setMachines }) =>
           lon: position.lng,
           items: items.toString()
         }]);
-      // }
+      }
 
-      // if (!response.ok) {
-      //   // TODO: Error logic
-      //   throw new Error("Failed to upload");
-      // }
+      if (!response.ok) {
+        // TODO: Error logic
+        throw new Error("Failed to upload");
+      }
       console.log("Successfully uploaded");
     } catch (error) {
       console.log("Upload error", error);
@@ -172,14 +182,13 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen, setMachines }) =>
   return (
     <form onSubmit={handleSubmit} className="add-vending-machine-card">
       <div className="add-vending-machine-top-row">
-        <label className="switch" title="Toggle vending machine availability">
-          <input
-            type="checkbox"
-            checked={available}
-            onChange={() => setAvailable(!available)}
-          />
-          <span className="slider"></span>
-        </label>
+          <button
+            type="button"
+            onClick={() => setAvailable(!available)}
+            className={`avail-button ${available ? `is-available` : `is-unavailable`}`}
+          >
+            {available ? 'Available' : 'Unavailable'}
+          </button>
         <button
           type="button"
           onClick={handlePosition}
@@ -241,10 +250,11 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen, setMachines }) =>
         <select
           value={location}
           onChange={(e) => setLocation(e.target.value)}
+          required
         >
-          <option value="">-- Choose a building --</option>
+          <option value="" disabled>-- Choose a building --</option>
           {BCIT_BUILDINGS.map((building) => (
-            <option key={building.name}>
+            <option key={building.name} value={building.name}>
               {building.name}
             </option>
           ))}
@@ -273,14 +283,13 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen, setMachines }) =>
           <li key={index} className="add-vending-machine-item-row">
             <span className="vending-machine-item-name">{item.name}</span>
             <div className="vending-machine-item-controls">
-              <label className="switch">
-                <input
-                  type="checkbox"
-                  checked={item.available}
-                  onChange={() => toggleItem(index)}
-                />
-                <span className="slider round"></span>
-              </label>
+              <button
+                type="button"
+                onClick={() => toggleItem(index)}
+                className={`avail-button ${item.available ? `is-available` : `is-unavailable`}`}
+              >
+                {item.available ? 'Available' : 'Unavailable'}
+              </button>
             </div>
             <button
               type="button"

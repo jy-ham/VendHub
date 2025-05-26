@@ -39,7 +39,6 @@ const Map = ({
   machines,
   setMachines
 }: MapProps) => {
-  // const [machines, setMachines] = useState<VendingMachine[]>([]);
   const [userLocation, setUserLocation] = useState<{
     lat: number;
     lng: number;
