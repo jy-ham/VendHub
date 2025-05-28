@@ -5,34 +5,25 @@ import { eq } from 'drizzle-orm';
 import { users } from '../schema/Users.js';
 import {db, supabase} from './dbConnection.js'
 import argon2 from 'argon2'
+import type { Env, JwtPayload} from '../types/env.js'; 
+import { sign, verify } from "hono/jwt";
 
-export const userAuth = new Hono();
+
+export const userAuth = new Hono<Env>();
 userAuth.use(cors());
 
 // Register: hash password and store
 userAuth.post('/register', async (c) => {
   let { username, email, password } = await c.req.json()
 
-  // const body = await c.req.parseBody({ all: true });
-  
-  // const username = body.username as string;
-  // const email = body.email as string;
-  // if (!username || !email) {
-  //   return c.json({ error: 'Missing fields' }, 400)
-  // }
+  if (!username) {
+    const now = Date.now(); // milliseconds since 1970
+    const highPrecision = Math.floor(performance.now() * 1000); // sub-ms in µs
+    const uniqueMicroseconds = now * 1000 + (highPrecision % 1000); // total in µs
+    username = `user${uniqueMicroseconds}`;
+  }
 
-  // let password;
-  // try {
-  //   if (!body.password) {
-  //       return c.json({ error: 'Missing fields' }, 400)
-  //   }
-  //    password = await argon2.hash(body.password as string);
-  //  } catch (err) {
-  //   return c.json({ error: 'Hashing failed' }, 500)
-  //  }
-  
-
-  if (!username || !email || !password) {
+  if ( !email || !password) {
     return c.json({ error: 'Missing fields' }, 400)
   }
 
@@ -68,18 +59,38 @@ userAuth.post('/login', async (c) => {
     .where(eq(users.email, email))
     .limit(1);
 
-  if (result.length === 0) {
+  if (result.length === 0 || !result[0].password) {
     return c.json({ error: 'User not found' }, 404);
   }
 
-  const storedHash = result[0].password;
-  
-  if (!storedHash) return c.json({ error: 'User not found' }, 404)
-
   try {
-    const valid = await argon2.verify(storedHash, password)
+    const valid = await argon2.verify(result[0].password, password)
     if (!valid) return c.json({ error: 'Invalid password' }, 401)
-    return c.json({ message: 'Login successful' })
+    
+    
+    // Add for prod
+    // if (!result[0].username) {
+    //   return c.json({ error: 'Invalid username' }, 400);
+    // }
+    
+    // ✅ Step 1: Prepare payload
+    const payload: JwtPayload= {
+      id: result[0].id,
+      email: result[0].email,
+      username: result[0].username || ''
+    };
+
+    // ✅ Step 2: Sign JWT
+    const jwtSecret = c.get("JWT_SECRET");
+    const token = await sign(payload, jwtSecret);
+
+    // ✅ Step 3: Set cookie
+    c.header(
+      'Set-Cookie',
+      `auth=${token}; HttpOnly; Path=/; Max-Age=${60 * 60 * 24 * 7}`
+    );
+
+    return c.json({ message: 'Login successful' });
   } catch (err) {
     return c.json({ error: 'Verification failed' }, 500)
   }
