@@ -1,8 +1,13 @@
 import React, { useRef, useState } from "react";
 import AddVendingMachine from "./AddVendingMachine";
+import { VendingMachine } from "../@types/VendingMachine";
 import "../css/AddButton.css";
 
-const AddButton: React.FC = () => {
+interface AddButtonProps {
+  setMachines: React.Dispatch<React.SetStateAction<VendingMachine[]>>;
+}
+
+const AddButton: React.FC<AddButtonProps> = ({ setMachines }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
 
@@ -30,7 +35,7 @@ const AddButton: React.FC = () => {
       </button>
 
       <dialog ref={dialogRef} className="dialog" onClick={handleBackdropClick}>
-        <AddVendingMachine onClose={closeDialog} isOpen={isOpen} />
+        <AddVendingMachine setMachines={setMachines} onClose={closeDialog} isOpen={isOpen} />
       </dialog>
     </>
   );

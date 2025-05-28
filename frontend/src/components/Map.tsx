@@ -25,6 +25,8 @@ interface MapProps {
   mutiMachine: boolean;
   setMutiMachine: (value: boolean) => void;
   onMapClick?: () => void;
+  machines: VendingMachine[];
+  setMachines: React.Dispatch<React.SetStateAction<VendingMachine[]>>;
 }
 
 const Map = ({
@@ -34,8 +36,9 @@ const Map = ({
   mutiMachine,
   setMutiMachine,
   onMapClick,
+  machines,
+  setMachines
 }: MapProps) => {
-  const [machines, setMachines] = useState<VendingMachine[]>([]);
   const [userLocation, setUserLocation] = useState<{
     lat: number;
     lng: number;
@@ -112,6 +115,7 @@ const Map = ({
       }}
     >
       {marker && <Marker position={marker} />}
+      {console.log("In map:",machines)}
 
       {machines.map((machine) => (
         <DotMarker

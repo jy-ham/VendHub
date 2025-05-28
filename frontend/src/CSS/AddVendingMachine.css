@@ -60,7 +60,7 @@ input:checked + .slider:before {
   justify-content: flex-end;
   align-items: center;
   margin-bottom: 12px;
-  /* gap: 8px */
+  gap: 8px;
 }
 
 .add-vending-machine-buttons {
@@ -243,4 +243,23 @@ input:checked + .slider:before {
 
 .slider.round:before {
   border-radius: 50%;
+}
+
+.avail-button {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  outline: none;
+}
+
+.is-available {
+  background: #e6f4ea;
+  color: #237a49;
+}
+
+.is-unavailable {
+  background: #fbeeee;
+  color: #a12323;
 }

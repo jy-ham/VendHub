@@ -7,6 +7,7 @@ import UserAuthForm from "./components/UserAuthForm";
 import { LoadScript } from "@react-google-maps/api";
 import axios from "axios";
 import MachineDetailPage from "./components/MachineDetailsPage";
+import { VendingMachine } from "./@types/VendingMachine";
 import "./App.css";
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [machines, setMachines] = useState<VendingMachine[]>([]);
 
   const handleSearch = (location: { lat: number; lng: number }) => {
     setCenter(location);
@@ -70,8 +72,10 @@ function App() {
                       setDismissSuggestions={setDismissSuggestions}
                       setShowAuth={setShowAuth}
                       isLoggedIn={isLoggedIn}
+                      setMachines={setMachines}
                     />
                   </div>
+                  <button onClick={() => setIsLoggedIn(!isLoggedIn)}>LOGIN</button>
 
                   {/* Map Display */}
                   <div className="map-container">
@@ -82,6 +86,8 @@ function App() {
                       mutiMachine={mutiMachine}
                       setMutiMachine={setMutiMachine}
                       onMapClick={handleMapClick}
+                      setMachines={setMachines}
+                      machines={machines}
                     />
                   </div>
                   {/* Auth Modal (pop-up) */}

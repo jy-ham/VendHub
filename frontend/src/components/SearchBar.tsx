@@ -3,6 +3,7 @@ import { BCIT_BUILDINGS } from "../data/BCIT_BUILDINGS";
 import { useEffect, useState } from "react";
 import AddButton from "./AddButton";
 import { FaRegUser } from "react-icons/fa";
+import { VendingMachine } from "../@types/VendingMachine";
 
 interface SearchBarProps {
   onSearch: (location: { lat: number; lng: number }) => void;
@@ -10,6 +11,7 @@ interface SearchBarProps {
   setDismissSuggestions: (val: boolean) => void;
   setShowAuth: (val: boolean) => void;
   isLoggedIn: boolean;
+  setMachines: React.Dispatch<React.SetStateAction<VendingMachine[]>>;
 }
 
 const SearchBar = ({
@@ -17,7 +19,8 @@ const SearchBar = ({
   dismissSuggestions,
   setDismissSuggestions,
   setShowAuth,
-  isLoggedIn
+  isLoggedIn,
+  setMachines
 }: SearchBarProps) => {
   const [input, setInput] = useState("");
   const [suggestions, setSuggestions] = useState<typeof BCIT_BUILDINGS>([]);
@@ -59,7 +62,7 @@ const SearchBar = ({
   return (
     <div className="search-container">
       <div style={{ width: "20%" }}>
-        {isLoggedIn ? <AddButton /> : <button className="login-button" onClick={() => setShowAuth(true)}>
+        {isLoggedIn ? <AddButton setMachines={setMachines} /> : <button className="login-button" onClick={() => setShowAuth(true)}>
           <FaRegUser/>
         </button>}
       </div>

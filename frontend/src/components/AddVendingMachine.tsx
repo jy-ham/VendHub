@@ -1,6 +1,7 @@
 import React, { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import "../css/AddVendingMachine.css";
 import { useLocation } from "./SharedContext";
+import { VendingMachine } from "../@types/VendingMachine";
 import { FaRegSave, FaMapMarkerAlt } from "react-icons/fa";
 import { BCIT_BUILDINGS } from "../data/BCIT_BUILDINGS";
 
@@ -12,6 +13,7 @@ interface Item {
 interface Props {
   onClose: () => void;
   isOpen: boolean;
+  setMachines: React.Dispatch<React.SetStateAction<VendingMachine[]>>;
 }
 
 type Location = {
@@ -19,7 +21,7 @@ type Location = {
   lng: number;
 };
 
-const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen }) => {
+const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen, setMachines }) => {
   const { getCurrentLocation, locationPermissions } = useLocation();
 
   const [location, setLocation] = useState("");
@@ -117,6 +119,16 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen }) => {
       items,
     });
 
+    if (!description) {
+      alert("Please enter a name");
+      return;
+    }
+    
+    if (!location) {
+      alert("Please select a building.");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("location", location);
     formData.append("desc", description);
@@ -124,6 +136,11 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen }) => {
     if (position) {
       formData.append("lat", position.lat.toString());
       formData.append("lon", position.lng.toString());
+    } else {
+      alert(
+        "There was an error in acquiring your current location. Please enable location access in your browser settings and try again."
+      );
+      return;
     }
 
     if (photo instanceof File) {
@@ -137,6 +154,18 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen }) => {
         method: "POST",
         body: formData,
       });
+
+      if (response.ok) {
+        setMachines(machines => [...machines, {
+          // TODO: id isn't set here, so it brings up a warning when rendering a new map marker.
+          location: location,
+          desc: description,
+          available: available,
+          lat: position.lat,
+          lon: position.lng,
+          items: items.toString()
+        }]);
+      }
 
       if (!response.ok) {
         // TODO: Error logic
@@ -153,14 +182,13 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen }) => {
   return (
     <form onSubmit={handleSubmit} className="add-vending-machine-card">
       <div className="add-vending-machine-top-row">
-        <label className="switch" title="Toggle vending machine availability">
-          <input
-            type="checkbox"
-            checked={available}
-            onChange={() => setAvailable(!available)}
-          />
-          <span className="slider"></span>
-        </label>
+          <button
+            type="button"
+            onClick={() => setAvailable(!available)}
+            className={`avail-button ${available ? `is-available` : `is-unavailable`}`}
+          >
+            {available ? 'Available' : 'Unavailable'}
+          </button>
         <button
           type="button"
           onClick={handlePosition}
@@ -222,10 +250,11 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen }) => {
         <select
           value={location}
           onChange={(e) => setLocation(e.target.value)}
+          required
         >
-          <option value="">-- Choose a building --</option>
+          <option value="" disabled>-- Choose a building --</option>
           {BCIT_BUILDINGS.map((building) => (
-            <option key={building.name}>
+            <option key={building.name} value={building.name}>
               {building.name}
             </option>
           ))}
@@ -254,14 +283,13 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen }) => {
           <li key={index} className="add-vending-machine-item-row">
             <span className="vending-machine-item-name">{item.name}</span>
             <div className="vending-machine-item-controls">
-              <label className="switch">
-                <input
-                  type="checkbox"
-                  checked={item.available}
-                  onChange={() => toggleItem(index)}
-                />
-                <span className="slider round"></span>
-              </label>
+              <button
+                type="button"
+                onClick={() => toggleItem(index)}
+                className={`avail-button ${item.available ? `is-available` : `is-unavailable`}`}
+              >
+                {item.available ? 'Available' : 'Unavailable'}
+              </button>
             </div>
             <button
               type="button"
