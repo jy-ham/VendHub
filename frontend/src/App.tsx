@@ -75,8 +75,6 @@ function App() {
                       setMachines={setMachines}
                     />
                   </div>
-                  <button onClick={() => setIsLoggedIn(!isLoggedIn)}>LOGIN</button>
-
                   {/* Map Display */}
                   <div className="map-container">
                     <Map
@@ -94,7 +92,7 @@ function App() {
                   {showAuth && (
                     <div className="auth-modal">
                       <div className="auth-modal-content">
-                        <UserAuthForm onClose={() => setShowAuth(false)} setIsLoggedIn={setIsLoggedIn}/>
+                        <UserAuthForm onClose={() => setShowAuth(false)} setIsLoggedIn={setIsLoggedIn} />
                       </div>
                     </div>
                   )}

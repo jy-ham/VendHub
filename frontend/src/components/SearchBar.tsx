@@ -63,10 +63,10 @@ const SearchBar = ({
     <div className="search-container">
       <div style={{ width: "20%" }}>
         {isLoggedIn ? <AddButton setMachines={setMachines} /> : <button className="login-button" onClick={() => setShowAuth(true)}>
-          <FaRegUser/>
+          <FaRegUser />
         </button>}
       </div>
-      <div style={{ width: "60%" }}>
+      <div style={{ width: "80%" }}>
         <form onSubmit={handleSubmit} className="search-form">
           <div className="input-container">
             <input
@@ -87,8 +87,6 @@ const SearchBar = ({
             )}
           </div>
         </form>
-      </div>
-      <div style={{ width: "20%" }}>
       </div>
     </div>
   );
