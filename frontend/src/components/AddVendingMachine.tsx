@@ -156,15 +156,19 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen, setMachines }) =>
       });
 
       if (response.ok) {
-        setMachines(machines => [...machines, {
-          // TODO: id isn't set here, so it brings up a warning when rendering a new map marker.
-          location: location,
-          desc: description,
-          available: available,
-          lat: position.lat,
-          lon: position.lng,
-          items: items.toString()
-        }]);
+        setMachines((machines) => {
+          const lastId = machines.length > 0 ? machines[machines.length - 1].id : 0;
+          const newMachine = {
+            id: lastId + 1,
+            location: location,
+            desc: description,
+            available: available,
+            lat: position.lat,
+            lon: position.lng,
+            items: items.toString(),
+          };
+          return [...machines, newMachine];
+        });
       }
 
       if (!response.ok) {
