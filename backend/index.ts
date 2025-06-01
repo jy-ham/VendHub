@@ -1,14 +1,13 @@
 import 'dotenv/config';
 import { Hono } from 'hono';
-import type { Context } from 'hono';
 import { cors } from 'hono/cors';
 import { mapRoutes } from './api/mapRoutes.js';
 import { vendMachine } from './api/vendingMachineDB.js';
-//import { authRoutes } from './api/authRoutes.js';
 import { userAuth } from './api/userAuth.js';
 import { serve } from '@hono/node-server';
-import { sign, verify } from "hono/jwt";
-import {Env, JwtPayload} from './types/env.js'
+import { verify } from "hono/jwt";
+import {Env, JwtPayload} from './types/env.js';
+import { match } from 'path-to-regexp';
 
 const app = new Hono<Env>();
 
@@ -20,10 +19,17 @@ app.use("/api/*", async (c, next) => {
   c.set("JWT_SECRET", jwtSecret);
 
   // Public routes that don't require auth
-  const publicPaths = ["/api/login", "/api/register", "/api/map-key"];
+  const publicPaths = [
+    { method: "POST", path: match("/api/login") },
+    { method: "POST", path: match("/api/register") }, 
+    { method: "GET", path: match("/api/map-key") },
+    { method: "GET", path: match("/api/vending-machine") },
+    { method: "GET", path: match("/api/vending-machine/:id") }
+  ];
   const currentPath = c.req.path;
+  const currentMethod = c.req.method;
 
-  const isPublic = publicPaths.some((path) => currentPath.startsWith(path));
+  const isPublic = publicPaths.some(({ method, path }) => method === currentMethod && path(currentPath) !== false);
 
   // Extract JWT from 'auth' cookie
   const cookieHeader = c.req.header("Cookie") || "";
@@ -46,12 +52,13 @@ app.use("/api/*", async (c, next) => {
   if (isPublic) {
     return await next(); // ✅ Public route, no token required
   }
+
+  return c.json({ error: "Unauthorized, user not logged in" }, 401);
 });
 
 // Register map routes under `/api`
 app.route('/api', mapRoutes);
 app.route('/api', vendMachine);
-//app.route('/api', authRoutes);
 app.route('/api', userAuth);
 
 // Start server
