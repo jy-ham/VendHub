@@ -45,8 +45,6 @@ function App() {
         setLoading(false);
       }
     };
-    const token = localStorage.getItem('token');
-    setIsLoggedIn(!!token);
     fetchKey();
   }, []);
   // api checking

@@ -114,7 +114,6 @@ const Map = ({
         mapRef.current = map;
       }}
     >
-      {marker && <Marker position={marker} />}
       {console.log("In map:",machines)}
 
       {machines.map((machine) => (

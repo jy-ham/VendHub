@@ -1,5 +1,5 @@
 export interface VendingMachine {
-    id?: number;
+    id: number;
     location: string;
     desc: string;
     available: boolean;
