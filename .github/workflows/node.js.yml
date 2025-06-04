@@ -34,5 +34,4 @@ jobs:
             ${{ runner.os }}-node-
 
       - run: npm install
-#      - run: npm test
-
+      - run: npm test
