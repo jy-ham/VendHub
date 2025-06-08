@@ -1,4 +1,4 @@
-import "../css/SearchBar.css";
+import "../CSS/SearchBar.css";
 import { BCIT_BUILDINGS } from "../data/BCIT_BUILDINGS";
 import { useEffect, useState } from "react";
 import AddButton from "./AddButton";
@@ -20,7 +20,7 @@ const SearchBar = ({
   setDismissSuggestions,
   setShowAuth,
   isLoggedIn,
-  setMachines
+  setMachines,
 }: SearchBarProps) => {
   const [input, setInput] = useState("");
   const [suggestions, setSuggestions] = useState<typeof BCIT_BUILDINGS>([]);
@@ -62,9 +62,13 @@ const SearchBar = ({
   return (
     <div className="search-container">
       <div style={{ width: "20%" }}>
-        {isLoggedIn ? <AddButton setMachines={setMachines} /> : <button className="login-button" onClick={() => setShowAuth(true)}>
-          <FaRegUser />
-        </button>}
+        {isLoggedIn ? (
+          <AddButton setMachines={setMachines} />
+        ) : (
+          <button className="login-button" onClick={() => setShowAuth(true)}>
+            <FaRegUser />
+          </button>
+        )}
       </div>
       <div style={{ width: "80%" }}>
         <form onSubmit={handleSubmit} className="search-form">
