@@ -17,9 +17,6 @@ jobs:
     strategy:
       matrix:
         node-version: ["20.x"]
-    env:
-      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
     steps:
       - uses: actions/checkout@v4
 
@@ -37,4 +34,9 @@ jobs:
             ${{ runner.os }}-node-
 
       - run: npm install
-      - run: npm test
+
+      - name : Run tests
+        run: npm test
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
