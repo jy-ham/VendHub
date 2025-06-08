@@ -1,1 +1,2 @@
-import 'dotenv/config';
+import "dotenv/config";
+import "@testing-library/jest-dom";

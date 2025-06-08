@@ -1,15 +1,14 @@
 {
-    "compilerOptions": {
-      "target": "ESNext",
-      "module": "ESNext",
-      "moduleResolution": "Node",
-      "jsx": "react-jsx",
-      "esModuleInterop": true,
-      "strict": true,
-      "skipLibCheck": true,
-      "baseUrl": ".",
-      "types": ["vitest"]
-    },
-    "include": ["frontend", "backend"]
-  }
-  
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "jsx": "react-jsx",
+    "esModuleInterop": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "types": ["vitest/globals", "@testing-library/jest-dom"]
+  },
+  "include": ["frontend", "backend"]
+}
