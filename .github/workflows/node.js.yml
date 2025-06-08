@@ -34,6 +34,13 @@ jobs:
             ${{ runner.os }}-node-
 
       - run: npm install
+      - name: Debug - Check environment variables
+        run: |
+          echo "SUPABASE_URL starts with: ${SUPABASE_URL:0:20}"
+          echo "SUPABASE_SERVICE_ROLE_KEY length: ${#SUPABASE_SERVICE_ROLE_KEY}"
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
 
       - name : Run tests
         run: npm test
