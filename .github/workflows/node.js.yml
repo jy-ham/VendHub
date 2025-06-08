@@ -34,4 +34,10 @@ jobs:
             ${{ runner.os }}-node-
 
       - run: npm install
-      - run: npm test
+
+      - name : Run tests
+        run: npm test
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
