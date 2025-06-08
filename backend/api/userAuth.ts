@@ -3,10 +3,10 @@ import { cors } from 'hono/cors';
 import 'dotenv/config';
 import { eq } from 'drizzle-orm';
 import { users } from '../schema/Users.js';
-import {db, supabase} from './dbConnection.js'
+import { db } from './dbConnection.js'
 import argon2 from 'argon2'
 import type { Env, JwtPayload} from '../types/env.js'; 
-import { sign, verify } from "hono/jwt";
+import { sign } from "hono/jwt";
 
 
 export const userAuth = new Hono<Env>();

@@ -53,7 +53,6 @@ vendMachine.get('/vending-machine/:id', async (c) => {
 // Post vending machine info
 vendMachine.post('/vending-machine', async (c) => {
   try {
-
     const body = await c.req.parseBody({ all: true });
 
     const lat = body.lat as string;
