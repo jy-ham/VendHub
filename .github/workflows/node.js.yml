@@ -38,6 +38,8 @@ jobs:
       - name: Check DATABASE_URL is available
         run: |
           echo "DATABASE_URL starts with: ${DATABASE_URL:0:20}"
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       - name : Run tests
         run: npm test
