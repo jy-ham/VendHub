@@ -14,7 +14,11 @@
       "@api/*": [
         "./api/*"
       ]
-    }
+    },
+    "types": [
+      "vitest/globals",
+      "node"
+    ]
   },
   "include": [
     "**/*.ts",
