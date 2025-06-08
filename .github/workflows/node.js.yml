@@ -38,6 +38,7 @@ jobs:
       - name: Check DATABASE_URL is available
         run: |
           echo "DATABASE_URL starts with: ${DATABASE_URL:0:20}"
+          echo "DATABASE_URL length: ${#DATABASE_URL}"
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
