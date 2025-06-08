@@ -33,7 +33,7 @@ function App() {
     setMutiMachine(false);
   };
 
-  // Fetch Google Maps API key
+  // Fetch Google Maps API key NOTE: will move this from backend to frontend once it's hosted
   useEffect(() => {
     const fetchKey = async () => {
       try {
@@ -90,7 +90,10 @@ function App() {
                   {showAuth && (
                     <div className="auth-modal">
                       <div className="auth-modal-content">
-                        <UserAuthForm onClose={() => setShowAuth(false)} setIsLoggedIn={setIsLoggedIn} />
+                        <UserAuthForm
+                          onClose={() => setShowAuth(false)}
+                          setIsLoggedIn={setIsLoggedIn}
+                        />
                       </div>
                     </div>
                   )}
