@@ -5,6 +5,7 @@ export default defineConfig({
     environment: 'node',
     globals: true,
     include: ['backend/tests/**/*.test.ts'],
+    isolate: true,
     coverage: {
       exclude: [
         '**/*.config.ts'
