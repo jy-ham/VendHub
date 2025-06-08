@@ -1,4 +1,4 @@
-import "../CSS/SearchBar.css";
+import "../css/SearchBar.css";
 import { BCIT_BUILDINGS } from "../data/BCIT_BUILDINGS";
 import { useEffect, useState } from "react";
 import AddButton from "./AddButton";

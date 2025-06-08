@@ -1,4 +1,4 @@
-import "../CSS/UserAuthForm.css";
+import "../css/UserAuthForm.css";
 import { useState } from "react";
 import axios from "axios";
 
