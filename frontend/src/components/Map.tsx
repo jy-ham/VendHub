@@ -37,7 +37,7 @@ const Map = ({
   setMutiMachine,
   onMapClick,
   machines,
-  setMachines
+  setMachines,
 }: MapProps) => {
   const [userLocation, setUserLocation] = useState<{
     lat: number;
@@ -114,7 +114,7 @@ const Map = ({
         mapRef.current = map;
       }}
     >
-      {console.log("In map:",machines)}
+      {console.log("In map:", machines)}
 
       {machines.map((machine) => (
         <DotMarker
@@ -124,7 +124,7 @@ const Map = ({
           onClick={() => handleMarkerClick(machine)}
         />
       ))}
-
+      {marker && <Marker position={marker} />}
       {userLocation && window.google && window.google.maps && (
         <Marker
           position={userLocation}
