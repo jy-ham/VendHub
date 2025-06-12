@@ -18,6 +18,10 @@ export default defineConfig(({ mode }) => {
         },
       },
     },
+    preview: {
+      port: parseInt(process.env.PORT || '4173'),
+      host: '0.0.0.0',
+    },
     define: {
       'import.meta.env.VITE_BACKEND_URL': JSON.stringify(env.VITE_BACKEND_URL),
       'import.meta.env.VITE_GOOGLE_MAPS_API_KEY': JSON.stringify(env.VITE_GOOGLE_MAPS_API_KEY),
