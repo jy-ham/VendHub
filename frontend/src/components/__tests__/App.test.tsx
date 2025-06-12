@@ -27,7 +27,7 @@ describe("App", () => {
     render(<App />);
 
     await waitFor(() =>
-      expect(screen.getByText(/failed to load map/i)).toBeInTheDocument()
+      expect(screen.getByText(/Map unavailable/i)).toBeInTheDocument()
     );
   });
 });
