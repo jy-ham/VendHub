@@ -29,7 +29,9 @@ const UserAuthForm = ({ onClose, setIsLoggedIn }: UserAuthFormProps) => {
     setError(null);
     setMessage(null);
 
-    const endpoint = isRegister ? `${import.meta.env.VITE_BACKEND_URL}/api/register` : `${import.meta.env.VITE_BACKEND_URL}/api/login`;
+    const endpoint = isRegister
+      ? `${import.meta.env.VITE_BACKEND_URL}/api/register`
+      : `${import.meta.env.VITE_BACKEND_URL}/api/login`;
 
     try {
       const res = await axios.post<AuthResponse>(endpoint, {
@@ -77,7 +79,10 @@ const UserAuthForm = ({ onClose, setIsLoggedIn }: UserAuthFormProps) => {
       {message && <div className="message">{message}</div>}
       <span
         className="toggle-link"
-        onClick={() => setIsRegister((prev) => !prev)}
+        onClick={() => {
+          setIsRegister((prev) => !prev);
+          setError(null);
+        }}
       >
         {isRegister ? "Already have an account? Log in" : "New user? Sign up"}
       </span>
