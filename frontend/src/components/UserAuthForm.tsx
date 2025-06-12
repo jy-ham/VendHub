@@ -29,7 +29,7 @@ const UserAuthForm = ({ onClose, setIsLoggedIn }: UserAuthFormProps) => {
     setError(null);
     setMessage(null);
 
-    const endpoint = isRegister ? "/api/register" : "/api/login";
+    const endpoint = isRegister ? `${import.meta.env.VITE_BACKEND_URL}/api/register` : `${import.meta.env.VITE_BACKEND_URL}/api/login`;
 
     try {
       const res = await axios.post<AuthResponse>(endpoint, {
