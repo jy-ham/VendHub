@@ -37,8 +37,11 @@ function App() {
   useEffect(() => {
     const fetchKey = async () => {
       try {
-        const response = await axios.get("/api/map-key");
-        setApiKey(response.data.key);
+        //const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/map-key`);
+        //setApiKey(response.data.key);
+
+
+        setApiKey(import.meta.env.VITE_GOOGLE_MAPS_API_KEY);
       } catch (err) {
         setError("Failed to load map.");
       } finally {

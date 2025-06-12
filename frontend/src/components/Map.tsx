@@ -53,7 +53,7 @@ const Map = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get("/api/vending-machine");
+        const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/vending-machine`);
         setMachines(res.data);
       } catch (error) {
         console.error("Error fetching vending machine data:", error);
