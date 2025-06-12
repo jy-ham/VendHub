@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { GoogleMap, OverlayView, Marker } from "@react-google-maps/api";
+import { GoogleMap, Marker } from "@react-google-maps/api";
 import axios from "axios";
 import DotMarker from "./DotMarker";
 import MultiMachineCard from "./MultiMachineCard";
@@ -21,7 +21,7 @@ interface MapProps {
   marker?: {
     lat: number;
     lng: number;
-  };
+  } | null;
   mutiMachine: boolean;
   setMutiMachine: (value: boolean) => void;
   onMapClick?: () => void;
@@ -53,7 +53,9 @@ const Map = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/vending-machine`);
+        const res = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/api/vending-machine`
+        );
         setMachines(res.data);
       } catch (error) {
         console.error("Error fetching vending machine data:", error);

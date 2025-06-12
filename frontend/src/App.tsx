@@ -5,7 +5,6 @@ import Map from "./components/Map";
 import SearchBar from "./components/SearchBar";
 import UserAuthForm from "./components/UserAuthForm";
 import { LoadScript } from "@react-google-maps/api";
-import axios from "axios";
 import MachineDetailPage from "./components/MachineDetailsPage";
 import { VendingMachine } from "./@types/VendingMachine";
 import "./App.css";
@@ -13,7 +12,10 @@ import "./App.css";
 function App() {
   const BCIT_DEFAULT_LOCATION = { lat: 49.2488, lng: -122.9995 };
   const [center, setCenter] = useState(BCIT_DEFAULT_LOCATION);
-  const [markerPosition, setMarkerPosition] = useState(BCIT_DEFAULT_LOCATION);
+  const [markerPosition, setMarkerPosition] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
   const [dismissSuggestions, setDismissSuggestions] = useState(false);
   const [mutiMachine, setMutiMachine] = useState<boolean>(false);
   const [showAuth, setShowAuth] = useState(false);
@@ -39,7 +41,6 @@ function App() {
       try {
         //const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/map-key`);
         //setApiKey(response.data.key);
-
 
         setApiKey(import.meta.env.VITE_GOOGLE_MAPS_API_KEY);
       } catch (err) {
