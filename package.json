@@ -12,7 +12,7 @@
     "build:backend": "tsc -p backend/tsconfig.json && tsc-alias -p backend/tsconfig.json",
     "dev": "concurrently -n FRONTEND,BACKEND -c bgBlue.bold,bgGreen.bold \"npm run dev:frontend\" \"npm run dev:backend\"",
     "build": "npm run build:backend && vite build",
-    "preview": "vite preview",
+    "preview": "vite preview --config frontend/vite.config.ts",
     "generate": "drizzle-kit generate",
     "push": "drizzle-kit push",
     "coverage": "vitest run --coverage"
