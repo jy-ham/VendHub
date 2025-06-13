@@ -1,6 +1,6 @@
 import "../css/UserAuthForm.css";
 import { useState } from "react";
-import axios from "axios";
+import apiClient from "../api/client";
 
 interface UserAuthFormProps {
   onClose: () => void;
@@ -8,8 +8,8 @@ interface UserAuthFormProps {
 }
 
 interface AuthResponse {
-  token: string;
-  user: {
+  message: string;
+  user?: {
     id: number;
     email: string;
   };
@@ -29,19 +29,16 @@ const UserAuthForm = ({ onClose, setIsLoggedIn }: UserAuthFormProps) => {
     setError(null);
     setMessage(null);
 
-    const endpoint = isRegister
-      ? `${import.meta.env.VITE_BACKEND_URL}/api/register`
-      : `${import.meta.env.VITE_BACKEND_URL}/api/login`;
+const endpoint = isRegister ? "/register" : "/login";
 
     try {
-      const res = await axios.post<AuthResponse>(endpoint, {
+      const res = await apiClient.post<AuthResponse>(endpoint, {
         email,
         password,
       });
 
-      const { token, user } = res.data;
-      localStorage.setItem("token", token);
-      setMessage(`Welcome, ${user.email}!`);
+      const userEmail = res.data.user?.email || email;
+      setMessage(`Welcome, ${userEmail}!`);
       setIsLoggedIn(true);
     } catch (err: any) {
       setError(err.response?.data?.error || "Something went wrong.");
