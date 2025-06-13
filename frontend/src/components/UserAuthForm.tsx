@@ -29,7 +29,7 @@ const UserAuthForm = ({ onClose, setIsLoggedIn }: UserAuthFormProps) => {
     setError(null);
     setMessage(null);
 
-    const endpoint = isRegister ? "/register" : "/login";
+const endpoint = isRegister ? "/register" : "/login";
 
     try {
       const res = await apiClient.post<AuthResponse>(endpoint, {
@@ -76,7 +76,10 @@ const UserAuthForm = ({ onClose, setIsLoggedIn }: UserAuthFormProps) => {
       {message && <div className="message">{message}</div>}
       <span
         className="toggle-link"
-        onClick={() => setIsRegister((prev) => !prev)}
+        onClick={() => {
+          setIsRegister((prev) => !prev);
+          setError(null);
+        }}
       >
         {isRegister ? "Already have an account? Log in" : "New user? Sign up"}
       </span>

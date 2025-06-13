@@ -150,7 +150,7 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen, setMachines }) =>
     formData.append("items", JSON.stringify(items));
 
     try {
-      const response = await fetch("/api/vending-machine", {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/vending-machine`, {
         method: "POST",
         body: formData,
       });

@@ -15,11 +15,11 @@ export interface VendingMachineRecord {
 }
 
 export async function getAllMachines() {
-    const response = await axios.get<VendingMachineRecord[]>('/api/vending-machine');
+    const response = await axios.get<VendingMachineRecord[]>(`${import.meta.env.VITE_BACKEND_URL}/api/vending-machine`);
     return response.data;
 }
 
 export async function getMachine(id: number){
-    const response = await axios.get<VendingMachineRecord>(`/api/vending-machine/${id}`);
+    const response = await axios.get<VendingMachineRecord>(`${import.meta.env.VITE_BACKEND_URL}/api/vending-machine/${id}`);
     return response.data;
 }
