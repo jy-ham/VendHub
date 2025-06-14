@@ -9,7 +9,7 @@ import type { Env, JwtPayload } from "../types/env.js";
 import { sign } from "hono/jwt";
 
 export const userAuth = new Hono<Env>();
-userAuth.use(cors());
+// userAuth.use(cors());
 
 // Register: hash password and store
 userAuth.post("/register", async (c) => {
@@ -53,10 +53,10 @@ userAuth.post("/register", async (c) => {
     const jwtSecret = c.get("JWT_SECRET");
     const token = await sign(payload, jwtSecret);
 
-    c.header(
-      "Set-Cookie",
-      `auth=${token}; HttpOnly; Path=/; Max-Age=${60 * 60 * 24 * 7}`
-    );
+    // c.header(
+    //   "Set-Cookie",
+    //   `auth=${token}; HttpOnly; Path=/; Max-Age=${60 * 60 * 24 * 7}`
+    // );
 
     return c.json({ message: "User registered" });
   } catch (err) {
