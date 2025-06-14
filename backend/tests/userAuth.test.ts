@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi, Mock } from 'vitest';
 import { userAuth } from '../api/userAuth.js';
 import argon2 from 'argon2';
 import { db } from '../api/dbConnection.js';
@@ -8,21 +8,35 @@ import { sign } from 'hono/jwt';
 vi.mock('../api/dbConnection', () => ({
   db: {
     insert: vi.fn().mockReturnThis(),
-    values: vi.fn().mockResolvedValue(undefined),
+    values: vi.fn().mockReturnThis(),
     select: vi.fn().mockReturnThis(),
     from: vi.fn().mockReturnThis(),
     where: vi.fn().mockReturnThis(),
     limit: vi.fn().mockReturnThis(),
+    returning: vi.fn().mockResolvedValue([{
+      id: 1,
+      username: 'mock_username',
+      email: 'mock_email',
+      password: 'mock_password',
+      createdAt: new Date()
+    }])
   }
 }));
 
 // Mocking argon2
-vi.mock('argon2', () => ({
-  default: {
-    hash: vi.fn(),
-    verify: vi.fn()
-  }
-}));
+vi.mock('argon2', async (importOriginal) => {
+  const mockedHash = vi.fn();
+  const mockedVerify = vi.fn();
+
+  return {
+    default: {
+      hash: mockedHash,
+      verify: mockedVerify
+    },
+    hash: mockedHash,
+    verify: mockedVerify
+  };
+});
 
 // Mocking jwt
 vi.mock('hono/jwt', () => ({
@@ -37,11 +51,6 @@ const mockDb = db as unknown as {
   from: any;
   where: any;
   limit: any;
-};
-
-const mockArgon2 = argon2 as unknown as {
-  hash: any;
-  verify: any;
 };
 
 beforeEach(() => {
@@ -64,11 +73,11 @@ describe('POST /register', () => {
   });
 
   it('returns 200 when registration succeeds', async () => {
-    mockArgon2.hash.mockResolvedValue('hashed_password');
+    (argon2.hash as Mock).mockResolvedValue('hashed_password');
 
     const req = new Request('https://test/register', {
       method: 'POST',
-      body: JSON.stringify({ username: 'test', email: 'test@test.com', password: 'pass' }),
+      body: JSON.stringify({ username: 'test', email: 'test@test.com', password: 'password' }),
       headers: { 'Content-Type': 'application/json' }
     });
 
@@ -110,7 +119,7 @@ describe('POST /login', () => {
 
   it('returns 401 if password is invalid', async () => {
     mockDb.limit.mockResolvedValue([{ password: 'hashed' }]);
-    mockArgon2.verify.mockResolvedValue(false);
+    (argon2.verify as Mock).mockResolvedValue(false);
 
     const req = new Request('https://test/login', {
       method: 'POST',
@@ -126,7 +135,7 @@ describe('POST /login', () => {
 
   it('returns 200 and sets a cookie if login is successful', async () => {
     mockDb.limit.mockResolvedValue([{ id: 1, email: 'test@test.com', password: 'hashed', username: 'test' }]);
-    mockArgon2.verify.mockResolvedValue(true);
+    (argon2.verify as Mock).mockResolvedValue(true);
 
     // Mock sign to return fake token
     vi.mocked(sign);
