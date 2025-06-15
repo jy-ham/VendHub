@@ -14,23 +14,15 @@ const app = new Hono<Env>();
 // Enable CORS if needed
 // app.use("*", cors());
 
-app.use("*", cors({
-  origin: (origin) => {
-    // Allow requests with no origin (like mobile apps or Postman)
-    if (!origin) return true;
-    
-    const allowedOrigins = [
-      'http://localhost:5173',
-      'http://localhost:3000',
-      'http://127.0.0.1:5173'
-    ];
-    
-    return allowedOrigins.includes(origin);
-  },
-  credentials: true,
-  allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowHeaders: ['Content-Type', 'Authorization', 'Cookie'],
-}));
+app.use(
+  "*",
+  cors({
+    origin: true, // This allows ALL origins
+    credentials: false,
+    allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowHeaders: ["Content-Type", "Authorization", "Cookie"],
+  })
+);
 
 app.use("/api/*", async (c, next) => {
   const jwtSecret = process.env.JWT_SECRET!;

@@ -3,10 +3,10 @@ import axios from "axios";
 
 // Create axios instance with global configuration
 const apiClient = axios.create({
-  //   baseURL: "/api",
-  baseURL: import.meta.env.VITE_BACKEND_URL || "/api",
-  withCredentials: false, // Enable cookies for all requests
-  timeout: 10000, // 10 second timeout
+  baseURL:
+    (import.meta.env.VITE_BACKEND_URL || "http://localhost:3001") + "/api",
+  withCredentials: false, // Keep this false since your backend has credentials: false
+  timeout: 10000,
 });
 
 // Optional: Add request interceptor for debugging
