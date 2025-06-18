@@ -111,3 +111,32 @@ vendMachine.post('/vending-machine', async (c) => {
     return c.json({ error: 'Internal Server Error' }, 500);
   }
 });
+
+vendMachine.patch('/vending-machine/:id', async (c) => {
+  try {
+    const idParam = c.req.param('id');
+    const id = parseInt(idParam, 10);
+
+    if (isNaN(id)) {
+      return c.json({ error: 'Invalid ID' }, 400);
+    }
+
+    const body = await c.req.parseBody({ all: true });
+    const items = body.items as string;
+
+    if (!items) {
+      return c.json({ error: 'Missing items field' }, 400);
+    }
+
+    await db
+      .update(vendingMachine)
+      .set({ items })
+      .where(eq(vendingMachine.id, id));
+
+    return c.json({ message: 'Items updated successfully' });
+
+  } catch (err) {
+    console.error(err);
+    return c.json({ error: 'Internal Server Error' }, 500);
+  }
+});
