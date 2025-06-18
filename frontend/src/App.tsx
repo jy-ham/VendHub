@@ -97,6 +97,7 @@ function App() {
                         <UserAuthForm
                           onClose={() => setShowAuth(false)}
                           setIsLoggedIn={setIsLoggedIn}
+                          isLoggedIn={isLoggedIn}
                         />
                       </div>
                     </div>

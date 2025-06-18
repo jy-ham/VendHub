@@ -5,6 +5,7 @@ import apiClient from "../api/client";
 interface UserAuthFormProps {
   onClose: () => void;
   setIsLoggedIn: (value: boolean) => void;
+  isLoggedIn: boolean;
 }
 
 interface AuthResponse {
@@ -15,7 +16,7 @@ interface AuthResponse {
   };
 }
 
-const UserAuthForm = ({ onClose, setIsLoggedIn }: UserAuthFormProps) => {
+const UserAuthForm = ({ onClose, setIsLoggedIn, isLoggedIn }: UserAuthFormProps) => {
   const [isRegister, setIsRegister] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -29,9 +30,9 @@ const UserAuthForm = ({ onClose, setIsLoggedIn }: UserAuthFormProps) => {
     setError(null);
     setMessage(null);
 
-const endpoint = isRegister 
-  ? `${import.meta.env.VITE_BACKEND_URL}/api/register`
-  : `${import.meta.env.VITE_BACKEND_URL}/api/login`;
+    const endpoint = isRegister 
+      ? `/register`
+      : `/login`;
 
     try {
       const res = await apiClient.post<AuthResponse>(endpoint, {
@@ -56,35 +57,39 @@ const endpoint = isRegister
       </button>
       <h2>{isRegister ? "Create Account" : "Login"}</h2>
       <form onSubmit={handleSubmit}>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <button type="submit" disabled={loading}>
-          {loading ? "Please wait..." : isRegister ? "Sign Up" : "Login"}
-        </button>
+        {!isLoggedIn && (
+          <>
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <button type="submit" disabled={loading}>
+              {loading ? "Please wait..." : isRegister ? "Sign Up" : "Login"}
+            </button>
+            <span
+              className="toggle-link"
+              onClick={() => {
+                setIsRegister((prev) => !prev);
+                setError(null);
+              }}
+            >
+              {isRegister ? "Already have an account? Log in" : "New user? Sign up"}
+            </span>
+          </>
+        )}
       </form>
       {error && <div className="error">{error}</div>}
       {message && <div className="message">{message}</div>}
-      <span
-        className="toggle-link"
-        onClick={() => {
-          setIsRegister((prev) => !prev);
-          setError(null);
-        }}
-      >
-        {isRegister ? "Already have an account? Log in" : "New user? Sign up"}
-      </span>
     </div>
   );
 };
