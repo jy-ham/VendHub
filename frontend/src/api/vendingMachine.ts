@@ -15,6 +15,9 @@ export interface VendingMachineRecord {
     rating?: number; // not being returned atm
 }
 
+const BASE = `${import.meta.env.VITE_BACKEND_URL}/api/vending-machine`;
+
+
 export async function getAllMachines() {
     const response = await axios.get<VendingMachineRecord[]>(`${import.meta.env.VITE_BACKEND_URL}/api/vending-machine`,
     { withCredentials: true } );
@@ -30,10 +33,13 @@ export async function patchMachineItems(
     id: number,
     items: { name: string; available: boolean }[]
 ): Promise<void> {
+    const form = new FormData();
+    form.append('items', JSON.stringify(items));
     await axios.patch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/vending-machine/${id}`,
-        { items: JSON.stringify(items) },
-        { headers: { 'Content-Type': 'application/json' } }
-
+        `${BASE}/${id}`,
+        form,
+        {
+            withCredentials: true,
+        }
     );
 }
