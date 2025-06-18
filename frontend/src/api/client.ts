@@ -3,7 +3,7 @@ import axios from "axios";
 
 // Create axios instance with global configuration
 const apiClient = axios.create({
-  baseURL: "/api",
+  baseURL: `${import.meta.env.VITE_BACKEND_URL}/api`,
   withCredentials: true, // Enable cookies for all requests
   timeout: 10000, // 10 second timeout
 });
