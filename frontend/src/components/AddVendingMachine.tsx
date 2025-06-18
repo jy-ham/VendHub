@@ -1,9 +1,10 @@
 import React, { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import "../css/AddVendingMachine.css";
 import { useLocation } from "./SharedContext";
-import { VendingMachine } from "../@types/VendingMachine";
 import { FaRegSave, FaMapMarkerAlt } from "react-icons/fa";
 import { BCIT_BUILDINGS } from "../data/BCIT_BUILDINGS";
+import {VendingMachineRecord, patchMachineItems, getMachine} from '../api/vendingMachine';
+
 
 interface Item {
   name: string;
@@ -13,7 +14,11 @@ interface Item {
 interface Props {
   onClose: () => void;
   isOpen: boolean;
-  setMachines: React.Dispatch<React.SetStateAction<VendingMachine[]>>;
+  /** initialData = editing; if absent, it’s a “create” */
+  initialData?: VendingMachineRecord;
+  // setMachines: React.Dispatch<React.SetStateAction<VendingMachine[]>>;
+  /** callback to refresh parent list */
+  onSaved: (machine: VendingMachineRecord) => void;
 }
 
 type Location = {
@@ -21,31 +26,50 @@ type Location = {
   lng: number;
 };
 
-const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen, setMachines }) => {
+const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen, initialData, onSaved }) => {
   const { getCurrentLocation, locationPermissions } = useLocation();
 
-  const [location, setLocation] = useState("");
-  const [description, setDescription] = useState("");
+  const [location, setLocation] = useState(initialData?.location || '');
+  const [desc, setDesc] = useState(initialData?.desc || '');
   const [photo, setPhoto] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [itemInput, setItemInput] = useState("");
   const [items, setItems] = useState<Item[]>([]);
-  const [available, setAvailable] = useState(true);
+  const [available, setAvailable] = useState(initialData?.available ?? true);
   const [position, setPosition] = useState<Location>();
   const [loadingPosition, setLoadingPosition] = useState(false);
 
+  // On open, if initialData provided, parse its items JSON
   useEffect(() => {
-    if (isOpen) {
-      setLocation("");
-      setDescription("");
-      setPhoto(null);
-      setPhotoPreview(null);
-      setItemInput("");
-      setItems([]);
+    if (!isOpen) return;
+    if (initialData) {
+      try {
+        const parsed = JSON.parse(initialData.items);
+        if (Array.isArray(parsed) && parsed.length && typeof parsed[0] === 'object') {
+          setItems((parsed as any[]).map(it => ({
+            name: it.name,
+            available: it.available,
+          })));
+        } else if (Array.isArray(parsed)) {
+          setItems((parsed as string[]).map(name => ({
+            name, available: true,
+          })));
+        }
+      } catch {
+        setItems([]);
+      }
+    } else {
+      // new form
+      setLocation('');
+      setDesc('');
       setAvailable(true);
-      handlePosition();
+      setItems([]);
+      // acquire current coords
+      getCurrentLocation()
+          .then(pos => setPosition({ lat: pos.lat, lng: pos.lng }))
+          .catch(() => {});
     }
-  }, [isOpen]);
+  }, [isOpen, initialData]);
 
   useEffect(() => {
     if (!photo) {
@@ -113,13 +137,13 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen, setMachines }) =>
     console.log("Uploading: ", {
       location,
       position,
-      description,
+      desc,
       photo,
       available,
       items,
     });
 
-    if (!description) {
+    if (!desc) {
       alert("Please enter a name");
       return;
     }
@@ -131,7 +155,7 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen, setMachines }) =>
 
     const formData = new FormData();
     formData.append("location", location);
-    formData.append("desc", description);
+    formData.append("desc", desc);
     formData.append("available", available ? "true" : "false");
     if (position) {
       formData.append("lat", position.lat.toString());
@@ -150,39 +174,27 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen, setMachines }) =>
     formData.append("items", JSON.stringify(items));
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/vending-machine`, {
-        method: "POST",
-        body: formData,
-      });
-
-      if (response.ok) {
-        setMachines((machines) => {
-          const lastId = machines.length > 0 ? machines[machines.length - 1].id : 0;
-          const newMachine = {
-            id: lastId + 1,
-            location: location,
-            desc: description,
-            available: available,
-            lat: position.lat,
-            lon: position.lng,
-            items: items.toString(),
-          };
-          return [...machines, newMachine];
+      let saved: VendingMachineRecord;
+      if (initialData) {
+        // EDIT existing
+        await patchMachineItems(initialData.id, items);
+        saved = await getMachine(initialData.id);
+      } else {
+        // CREATE new
+        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/vending-machine`, {
+          method: 'POST', body: formData,
         });
+        saved = await res.json();
       }
-
-      if (!response.ok) {
-        // TODO: Error logic
-        throw new Error("Failed to upload");
-      }
-      console.log("Successfully uploaded");
-    } catch (error) {
-      console.log("Upload error", error);
+      onSaved(saved);
+      onClose();
+    } catch (err) {
+      console.error(err);
+      alert('Save failed');
     }
-
-    onClose();
   };
 
+  if (!isOpen) return null;
   return (
     <form onSubmit={handleSubmit} className="add-vending-machine-card">
       <div className="add-vending-machine-top-row">
@@ -245,8 +257,8 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen, setMachines }) =>
       <input
         type="text"
         placeholder="Name"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
+        value={desc}
+        onChange={(e) => setDesc(e.target.value)}
         className="add-vending-machine-input"
       />
 

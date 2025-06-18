@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+axios.defaults.withCredentials = true;
 export interface VendingMachineRecord {
     id: number;
     lat: string;       // numeric columns come across as strings by default
@@ -24,4 +25,15 @@ export async function getMachine(id: number){
     const response = await axios.get<VendingMachineRecord>(`${import.meta.env.VITE_BACKEND_URL}/api/vending-machine/${id}`,
     { withCredentials: true } );
     return response.data;
+}
+export async function patchMachineItems(
+    id: number,
+    items: { name: string; available: boolean }[]
+): Promise<void> {
+    await axios.patch(
+        `${import.meta.env.VITE_BACKEND_URL}/api/vending-machine/${id}`,
+        { items: JSON.stringify(items) },
+        { headers: { 'Content-Type': 'application/json' } }
+
+    );
 }

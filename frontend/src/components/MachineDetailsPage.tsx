@@ -1,11 +1,10 @@
-// src/components/MachineDetailPage.tsx
-
 import React, { useEffect, useState, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import VendingMachineImg from "../assets/vending1.png";
-
+import AddVendingMachine from "./AddVendingMachine";
+import { LocationProvider } from "./SharedContext";
 import { getMachine, VendingMachineRecord } from "../api/vendingMachine";
 import "../css/MachineDetailPage.css";
 
@@ -31,7 +30,8 @@ const PLACEHOLDER_ITEMS: Array<{ name: string; available: boolean }> = [
 const MachineDetailPage: React.FC = () => {
   const { machineId } = useParams<{ machineId: string }>();
   const navigate     = useNavigate();
-
+  const [editOpen, setEditOpen] = useState(false);
+  const [machineRec, setMachineRec] = useState<VendingMachineRecord|null>(null);
   const [rawData, setRawData]   = useState<VendingMachineRecord | null>(null);
   const [loading, setLoading]   = useState(true);
   const [error, setError]       = useState<string | null>(null);
@@ -104,6 +104,9 @@ const MachineDetailPage: React.FC = () => {
     };
   }, [rawData]);
 
+  useEffect(() => { setMachineRec(rawData); }, [rawData]);
+
+
   // Render loading / error / not-found states
   if (loading)   return <div className="md-loading">Loading…</div>;
   if (error)     return <div className="md-error">{error}</div>;
@@ -173,7 +176,30 @@ const MachineDetailPage: React.FC = () => {
                 </section>
               </div>
             </div>
-
+            {machineRec && (
+                <button
+                    className="md-edit-btn"
+                    onClick={() => setEditOpen(true)}
+                >
+                  Edit
+                </button>
+            )}
+            {editOpen && machineRec && (
+              <div className="avm-modal">
+                <LocationProvider>
+                  <AddVendingMachine
+                      isOpen={editOpen}
+                      initialData={machineRec!}
+                      onClose={() => setEditOpen(false)}
+                      onSaved={(updated) => {
+                        // refresh the page state:
+                        setRawData(updated);
+                        setEditOpen(false);
+                      }}
+                  />
+                </LocationProvider>
+              </div>
+            )}
             <div className="md-legend">
               <div>
                 <CheckCircleIcon className="icon-available" /> Available
