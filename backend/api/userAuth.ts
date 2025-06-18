@@ -55,7 +55,7 @@ userAuth.post("/register", async (c) => {
 
     c.header(
       "Set-Cookie",
-      `auth=${token}; HttpOnly; Path=/; Max-Age=${60 * 60 * 24 * 7}`
+      `auth=${token}; HttpOnly; SameSite=None; Secure; Path=/; Max-Age=${60 * 60 * 24 * 7}`
     );
 
     return c.json({ message: "User registered" });
@@ -105,7 +105,7 @@ userAuth.post("/login", async (c) => {
     // Step 3: Set cookie
     c.header(
       "Set-Cookie",
-      `auth=${token}; HttpOnly; Path=/; Max-Age=${60 * 60 * 24 * 7}`
+      `auth=${token}; HttpOnly; SameSite=None; Secure; Path=/; Max-Age=${60 * 60 * 24 * 7}`
     );
 
     return c.json({ message: "Login successful" });
