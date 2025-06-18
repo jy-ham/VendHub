@@ -58,7 +58,7 @@ app.use("/api/*", async (c, next) => {
   if (token) {
     try {
       const user = await verify(token, jwtSecret) as JwtPayload;
-      c.set("user", user); // Pass user to route
+      c.set("user", user);
       return await next();
     } catch {
       return c.json({ error: "Invalid or expired token" }, 401);
