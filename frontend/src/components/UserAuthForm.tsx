@@ -29,7 +29,9 @@ const UserAuthForm = ({ onClose, setIsLoggedIn }: UserAuthFormProps) => {
     setError(null);
     setMessage(null);
 
-const endpoint = isRegister ? "/register" : "/login";
+const endpoint = isRegister 
+  ? `${import.meta.env.VITE_BACKEND_URL}/api/register`
+  : `${import.meta.env.VITE_BACKEND_URL}/api/login`;
 
     try {
       const res = await apiClient.post<AuthResponse>(endpoint, {
