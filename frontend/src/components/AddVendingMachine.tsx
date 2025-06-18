@@ -152,6 +152,7 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen, setMachines }) =>
     try {
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/vending-machine`, {
         method: "POST",
+        credentials: 'include',
         body: formData,
       });
 

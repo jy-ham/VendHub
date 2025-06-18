@@ -27,9 +27,9 @@ app.use("*", async (c, next) => {
 app.use("*", cors({
   origin: (origin, c) => {
   console.log("Incoming origin:", origin);
-  if (!origin) return null;
+  if (!origin) return "https://vendhub.onrender.com";
   if (["http://localhost:5173", "https://vendhub.onrender.com"].includes(origin)) return origin;
-  return null;
+  return "https://vendhub.onrender.com";
 },
   credentials: true
 }));
