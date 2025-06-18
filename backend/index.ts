@@ -13,12 +13,12 @@ const app = new Hono<Env>();
 
 // Enable CORS if needed
 app.use("*", cors({
-  origin: (origin) => {
-    console.log("Incoming origin:", origin);
-    if (!origin) return null;
-    if (["http://localhost:5173", "https://vendhub.onrender.com"].includes(origin)) return origin;
-    return null;
-  },
+  origin: (origin, c) => {
+  console.log("Incoming origin:", origin);
+  if (!origin) return null;
+  if (["http://localhost:5173", "https://vendhub.onrender.com"].includes(origin)) return origin;
+  return null;
+},
   credentials: true
 }));
 
