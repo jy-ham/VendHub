@@ -12,17 +12,10 @@ import { match } from 'path-to-regexp';
 const app = new Hono<Env>();
 
 // Enable CORS if needed
-const allowedOrigin = process.env.NODE_ENV === "production"
-  ? "https://vendhub.onrender.com"
-  : "http://localhost:5173";
-
-app.use(
-  "*",
-  cors({
-    origin: allowedOrigin,
-    credentials: true,
-  })
-);
+app.use("*", cors({
+  origin: "*", // allow all origins
+  credentials: false // must be false with '*'
+}));
 
 app.use("/api/*", async (c, next) => {
   const jwtSecret = process.env.JWT_SECRET!;
