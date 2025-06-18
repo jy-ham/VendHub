@@ -12,9 +12,18 @@ import { match } from 'path-to-regexp';
 const app = new Hono<Env>();
 
 // Enable CORS if needed
+const allowedOrigins = [
+  "https://vendhub.onrender.com",  // Deployed frontend
+  "http://localhost:5173"          // Local dev
+];
+
 app.use("*", cors({
-  origin: "*", // allow all origins
-  credentials: false // must be false with '*'
+  origin: (origin) => {
+    if (!origin) return ""; // Block requests with no origin (like curl)
+    if (allowedOrigins.includes(origin)) return origin;
+    return ""; // Block all other origins
+  },
+  credentials: true
 }));
 
 app.use("/api/*", async (c, next) => {
