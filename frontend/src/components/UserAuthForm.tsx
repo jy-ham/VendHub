@@ -10,6 +10,7 @@ interface UserAuthFormProps {
 
 interface AuthResponse {
   message: string;
+  token: string;
   user?: {
     id: number;
     email: string;
@@ -39,6 +40,10 @@ const UserAuthForm = ({ onClose, setIsLoggedIn, isLoggedIn }: UserAuthFormProps)
         email,
         password,
       });
+
+      if (res.data.token) {
+        localStorage.setItem("authToken", res.data.token);
+      }
 
       const userEmail = res.data.user?.email || email;
       setMessage(`Welcome, ${userEmail}!`);

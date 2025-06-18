@@ -138,7 +138,7 @@ describe('POST /login', () => {
     (argon2.verify as Mock).mockResolvedValue(true);
 
     // Mock sign to return fake token
-    vi.mocked(sign);
+    vi.mocked(sign).mockResolvedValue('mocked-token');
 
     const req = new Request('https://test/login', {
       method: 'POST',
@@ -150,6 +150,6 @@ describe('POST /login', () => {
     expect(res.status).toBe(200);
     const data = await res.json();
     expect(data.message).toBe('Login successful');
-    expect(res.headers.get('Set-Cookie')).toContain('auth=mocked-token');
+    expect(data.token).toBe('mocked-token');
   });
 });
