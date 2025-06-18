@@ -69,6 +69,19 @@ app.route('/api', mapRoutes);
 app.route('/api', vendMachine);
 app.route('/api', userAuth);
 
+app.use("*", async (c, next) => {
+  await next();
+
+  const origin = c.req.header("Origin");
+  const allowedOrigins = ["http://localhost:5173", "https://vendhub.onrender.com"];
+
+  if (origin && allowedOrigins.includes(origin)) {
+    c.res.headers.set("Access-Control-Allow-Origin", origin);
+    c.res.headers.set("Access-Control-Allow-Credentials", "true");
+  }
+});
+
+
 // Start server
 const PORT = Number(process.env.PORT) || 3001;
 serve({ fetch: app.fetch, port: PORT });
