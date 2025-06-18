@@ -150,9 +150,16 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen, setMachines }) =>
     formData.append("items", JSON.stringify(items));
 
     try {
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        throw new Error("User not authenticated.");
+      }
+
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/vending-machine`, {
         method: "POST",
-        credentials: 'include',
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
         body: formData,
       });
 
