@@ -33,7 +33,7 @@ describe('GET /api/vending-machine', () => {
 
 describe('GET /vending-machine/:id', () => {
   it('should return a vending machine', async () => {
-    const req = new Request('https://test/vending-machine/1', {
+    const req = new Request('https://test/vending-machine/41', {
       method: 'GET'
     });
 
