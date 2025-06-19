@@ -35,7 +35,7 @@ export async function patchMachineItems(
     available: boolean
 ): Promise<void> {
     await axios.patch(
-        `/api/vending-machine/${id}`,
+        `${BASE}/api/vending-machine/${id}`,
         {
             items: JSON.stringify(items),
             available: available.toString(),
