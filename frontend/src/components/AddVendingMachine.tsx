@@ -175,6 +175,7 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen, initialData, onSa
     formData.append("items", JSON.stringify(items));
 
     try {
+      const token = localStorage.getItem("authToken");
       let saved: VendingMachineRecord;
       if (initialData) {
         // EDIT existing
@@ -183,7 +184,11 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen, initialData, onSa
       } else {
         // CREATE new
         const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/vending-machine`, {
-          method: 'POST', body: formData,
+          method: 'POST', 
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+          body: formData,
         });
         saved = await res.json();
       }
