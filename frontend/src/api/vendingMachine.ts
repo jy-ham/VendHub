@@ -17,6 +17,13 @@ export interface VendingMachineRecord {
 
 const BASE = `${import.meta.env.VITE_BACKEND_URL}/api/vending-machine`;
 
+function getAuthHeaders() {
+    const token = localStorage.getItem('authToken');
+    if (!token) throw new Error('User not authenticated');
+    return {
+        'Authorization': `Bearer ${token}`,
+    };
+}
 
 export async function getAllMachines() {
     const response = await axios.get<VendingMachineRecord[]>(`${import.meta.env.VITE_BACKEND_URL}/api/vending-machine`,
@@ -24,25 +31,40 @@ export async function getAllMachines() {
     return response.data;
 }
 
-export async function getMachine(id: number){
-    const response = await axios.get<VendingMachineRecord>(`${import.meta.env.VITE_BACKEND_URL}/api/vending-machine/${id}`,
-        { withCredentials: true } );
-    return response.data;
+export async function getMachine(id: number): Promise<VendingMachineRecord> {
+    const res = await fetch(`${BASE}/${id}`, {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+            ...getAuthHeaders(),
+        },
+    });
+    if (!res.ok) {
+        const body = await res.json();
+        throw new Error(body.error || res.statusText);
+    }
+    return await res.json();
 }
+
 export async function patchMachineItems(
     id: number,
     items: { name: string; available: boolean }[],
     available: boolean
 ): Promise<void> {
-    await axios.patch(
-        `${BASE}/api/vending-machine/${id}`,
-        {
+    const res = await fetch(`${BASE}/${id}`, {
+        method: 'PATCH',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json',
+            ...getAuthHeaders(),
+        },
+        body: JSON.stringify({
             items: JSON.stringify(items),
             available: available.toString(),
-        },
-        {
-            headers: { 'Content-Type': 'application/json' },
-            withCredentials: true,
-        }
-    );
+        }),
+    });
+    if (!res.ok) {
+        const body = await res.json();
+        throw new Error(body.error || res.statusText);
+    }
 }
