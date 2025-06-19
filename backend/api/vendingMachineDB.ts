@@ -121,8 +121,8 @@ vendMachine.patch('/vending-machine/:id', async (c) => {
       return c.json({ error: 'Invalid ID' }, 400);
     }
 
-    const body = await c.req.parseBody({ all: true });
-    const items = body.items as string;
+    const body = await c.req.json<{ items?: string; available?: string }>();
+    const { items, available } = body;
 
     if (!items) {
       return c.json({ error: 'Missing items field' }, 400);
@@ -130,7 +130,10 @@ vendMachine.patch('/vending-machine/:id', async (c) => {
 
     await db
       .update(vendingMachine)
-      .set({ items })
+      .set({
+        items,
+        available: available === 'true'
+      })
       .where(eq(vendingMachine.id, id));
 
     return c.json({ message: 'Items updated successfully' });

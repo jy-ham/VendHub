@@ -13,8 +13,6 @@ interface MachineData {
   location: string;
   desc: string;
   available: boolean;
-  rating?: number;
-  reviewsCount?: number;
   itemsParsed: Array<{ name: string; available: boolean }>;
   imageUrl?: string;
 }
@@ -146,17 +144,6 @@ const MachineDetailPage: React.FC = () => {
 
               <div className="md-info">
                 <p className="md-desc">{machine.desc}</p>
-                <div className="md-meta">
-                  <div>
-                    Rating: <strong>{machine.rating}/5</strong>
-                  </div>
-                  <div>
-                    Reviews: <strong>{machine.reviewsCount}</strong>
-                  </div>
-                  <div>
-                    ID: <strong>{machine.id}</strong>
-                  </div>
-                </div>
 
                 <section className="md-items">
                   <h2>Items</h2>

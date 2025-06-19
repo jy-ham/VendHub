@@ -86,7 +86,7 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen, initialData, onSa
   }, [photo]);
 
   const handlePosition = async () => {
-    if (locationPermissions === "denied") {
+    if (!initialData && locationPermissions === "denied") {
       console.log(locationPermissions);
       alert(
         "You've denied location access. Please enable it in your browser settings. Adding a new vending machine requires your current location"
@@ -148,7 +148,7 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen, initialData, onSa
       return;
     }
     
-    if (!location) {
+    if (!initialData && !location) {
       alert("Please select a building.");
       return;
     }
@@ -157,14 +157,15 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen, initialData, onSa
     formData.append("location", location);
     formData.append("desc", desc);
     formData.append("available", available ? "true" : "false");
-    if (position) {
+    if (!initialData) {
+      if (!position) {
+        alert(
+            "Error getting your location—please enable location access and try again."
+        );
+        return;
+      }
       formData.append("lat", position.lat.toString());
       formData.append("lon", position.lng.toString());
-    } else {
-      alert(
-        "There was an error in acquiring your current location. Please enable location access in your browser settings and try again."
-      );
-      return;
     }
 
     if (photo instanceof File) {
@@ -177,7 +178,7 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen, initialData, onSa
       let saved: VendingMachineRecord;
       if (initialData) {
         // EDIT existing
-        await patchMachineItems(initialData.id, items);
+        await patchMachineItems(initialData.id, items, available);
         saved = await getMachine(initialData.id);
       } else {
         // CREATE new
@@ -266,7 +267,7 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen, initialData, onSa
         <select
           value={location}
           onChange={(e) => setLocation(e.target.value)}
-          required
+          required={!initialData}
         >
           <option value="" disabled>-- Choose a building --</option>
           {BCIT_BUILDINGS.map((building) => (
