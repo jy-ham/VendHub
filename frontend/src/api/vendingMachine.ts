@@ -15,7 +15,7 @@ export interface VendingMachineRecord {
     rating?: number; // not being returned atm
 }
 
-const BASE = `http://localhost:3001/api/vending-machine`;
+const BASE = `${import.meta.env.VITE_BACKEND_URL}/api/vending-machine`;
 
 
 export async function getAllMachines() {
