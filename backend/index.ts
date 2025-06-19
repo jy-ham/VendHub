@@ -52,19 +52,15 @@ app.use("/api/*", async (c, next) => {
   const isPublic = publicPaths.some(({ method, path }) => method === currentMethod && path(currentPath) !== false);
 
   // Extract JWT from 'auth' cookie
-  const cookieHeader = c.req.header("Cookie") || "";
-  const token = cookieHeader
-    .split("; ")
-    .find((c) => c.startsWith("auth="))
-    ?.split("=")[1];
+  const authHeader = c.req.header("Authorization");
+  const token = authHeader?.startsWith("Bearer ") ? authHeader.split(" ")[1] : null;
 
   if (token) {
     try {
       const user = await verify(token, jwtSecret) as JwtPayload;
-      c.set("user", user); // Make user available to handlers
-      return await next(); // ✅ Proceed to route
+      c.set("user", user);
+      return await next();
     } catch {
-      // Token exists but is invalid
       return c.json({ error: "Invalid or expired token" }, 401);
     }
   }

@@ -53,12 +53,7 @@ userAuth.post("/register", async (c) => {
     const jwtSecret = c.get("JWT_SECRET");
     const token = await sign(payload, jwtSecret);
 
-    c.header(
-      "Set-Cookie",
-      `auth=${token}; HttpOnly; Path=/; Max-Age=${60 * 60 * 24 * 7}`
-    );
-
-    return c.json({ message: "User registered" });
+    return c.json({ message: "User registered", token: token });
   } catch (err) {
     return c.json({ error: "Internal Server Error" }, 500);
   }
@@ -102,13 +97,7 @@ userAuth.post("/login", async (c) => {
     const jwtSecret = c.get("JWT_SECRET");
     const token = await sign(payload, jwtSecret);
 
-    // Step 3: Set cookie
-    c.header(
-      "Set-Cookie",
-      `auth=${token}; HttpOnly; Path=/; Max-Age=${60 * 60 * 24 * 7}`
-    );
-
-    return c.json({ message: "Login successful" });
+    return c.json({ message: "Login successful", token: token });
   } catch (err) {
     return c.json({ error: "Verification failed" }, 500);
   }

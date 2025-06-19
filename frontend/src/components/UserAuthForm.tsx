@@ -10,6 +10,7 @@ interface UserAuthFormProps {
 
 interface AuthResponse {
   message: string;
+  token: string;
   user?: {
     id: number;
     email: string;
@@ -31,14 +32,18 @@ const UserAuthForm = ({ onClose, setIsLoggedIn, isLoggedIn }: UserAuthFormProps)
     setMessage(null);
 
     const endpoint = isRegister 
-      ? `/register`
-      : `/login`;
+      ? `${import.meta.env.VITE_BACKEND_URL}/api/register`
+      : `${import.meta.env.VITE_BACKEND_URL}/api/login`;
 
     try {
       const res = await apiClient.post<AuthResponse>(endpoint, {
         email,
         password,
       });
+
+      if (res.data.token) {
+        localStorage.setItem("authToken", res.data.token);
+      }
 
       const userEmail = res.data.user?.email || email;
       setMessage(`Welcome, ${userEmail}!`);
