@@ -53,10 +53,15 @@ userAuth.post("/register", async (c) => {
     const jwtSecret = c.get("JWT_SECRET");
     const token = await sign(payload, jwtSecret);
 
+    // c.header(
+    //   "Set-Cookie",
+    //   `auth=${token}; HttpOnly; Path=/; Max-Age=${60 * 60 * 24 * 7}`
+    // );
+
     c.header(
-      "Set-Cookie",
-      `auth=${token}; HttpOnly; Path=/; Max-Age=${60 * 60 * 24 * 7}`
-    );
+  "Set-Cookie",
+  `auth=${token}; HttpOnly; Path=/; Max-Age=${60 * 60 * 24 * 7}; SameSite=None; Secure`
+);
 
     return c.json({ message: "User registered" });
   } catch (err) {
@@ -103,10 +108,15 @@ userAuth.post("/login", async (c) => {
     const token = await sign(payload, jwtSecret);
 
     // Step 3: Set cookie
+    // c.header(
+    //   "Set-Cookie",
+    //   `auth=${token}; HttpOnly; Path=/; Max-Age=${60 * 60 * 24 * 7}`
+    // );
+
     c.header(
-      "Set-Cookie",
-      `auth=${token}; HttpOnly; Path=/; Max-Age=${60 * 60 * 24 * 7}`
-    );
+  "Set-Cookie",
+  `auth=${token}; HttpOnly; Path=/; Max-Age=${60 * 60 * 24 * 7}; SameSite=None; Secure`
+);
 
     return c.json({ message: "Login successful" });
   } catch (err) {

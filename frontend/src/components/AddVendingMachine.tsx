@@ -61,29 +61,62 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen, setMachines }) =>
     };
   }, [photo]);
 
+  // const handlePosition = async () => {
+  //   if (locationPermissions === "denied") {
+  //     console.log(locationPermissions);
+  //     alert(
+  //       "You've denied location access. Please enable it in your browser settings. Adding a new vending machine requires your current location"
+  //     );
+  //     onClose();
+  //     return;
+  //   }
+
+  //   setLoadingPosition(true);
+
+  //   try {
+  //     const pos = await getCurrentLocation();
+  //     console.log("Current position:", pos.lat, pos.lng);
+  //     setPosition({ lat: pos.lat, lng: pos.lng });
+  //   } catch (e) {
+  //     console.log("Failed to get current location:", e);
+  //   } finally {
+  //     setLoadingPosition(false);
+  //   }
+
+
   const handlePosition = async () => {
-    if (locationPermissions === "denied") {
-      console.log(locationPermissions);
-      alert(
-        "You've denied location access. Please enable it in your browser settings. Adding a new vending machine requires your current location"
-      );
-      onClose();
+  if (locationPermissions === "denied") {
+    console.log(locationPermissions);
+    alert(
+      "You've denied location access. Please enable it in your browser settings. Adding a new vending machine requires your current location"
+    );
+    onClose();
+    return;
+  }
+
+  setLoadingPosition(true);
+
+  try {
+    console.log("getCurrentLocation is", getCurrentLocation); // 🧪 Debug line
+    if (typeof getCurrentLocation !== "function") {
+      console.error("getCurrentLocation is not a function");
+      setLoadingPosition(false);
       return;
     }
 
-    setLoadingPosition(true);
-
-    try {
-      const pos = await getCurrentLocation();
-      console.log("Current position:", pos.lat, pos.lng);
-      setPosition({ lat: pos.lat, lng: pos.lng });
-    } catch (e) {
-      console.log("Failed to get current location:", e);
-    } finally {
-      setLoadingPosition(false);
-    }
+    const pos = await getCurrentLocation(); // ❗Potential crash here if not a function
+    console.log("Current position:", pos.lat, pos.lng);
+    setPosition({ lat: pos.lat, lng: pos.lng });
+  } catch (e) {
+    console.log("Failed to get current location:", e);
+  } finally {
+    setLoadingPosition(false);
+  }
   };
 
+  
+
+  
   const handlePhotoChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] ?? null;
     setPhoto(file);
@@ -153,6 +186,7 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen, setMachines }) =>
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/vending-machine`, {
         method: "POST",
         body: formData,
+  credentials: "include", 
       });
 
       if (response.ok) {
@@ -172,9 +206,10 @@ const AddVendingMachine: React.FC<Props> = ({ onClose, isOpen, setMachines }) =>
       }
 
       if (!response.ok) {
-        // TODO: Error logic
-        throw new Error("Failed to upload");
-      }
+  const errorText = await response.text(); // Get actual error message from backend
+  console.error("Upload failed:", errorText); // <-- SEE THIS IN CONSOLE
+  throw new Error("Failed to upload");
+}
       console.log("Successfully uploaded");
     } catch (error) {
       console.log("Upload error", error);
